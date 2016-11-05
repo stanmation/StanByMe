@@ -17,7 +17,13 @@
 		1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0611FA1DC47EE900720E82 /* Constants.swift */; };
 		1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0611FE1DC491F300720E82 /* SignInViewController.swift */; };
 		1D0612011DC4A18100720E82 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0612001DC4A18100720E82 /* ChatViewController.swift */; };
+		1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC21DC9F2B200375810 /* GeoFire.m */; };
+		1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC41DC9F2B200375810 /* GFBase32Utils.m */; };
+		1D6D1ACD1DC9F2B200375810 /* GFGeoHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC61DC9F2B200375810 /* GFGeoHash.m */; };
+		1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC81DC9F2B200375810 /* GFGeoHashQuery.m */; };
+		1D6D1ACF1DC9F2B200375810 /* GFQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1ACA1DC9F2B200375810 /* GFQuery.m */; };
 		1DADC1901DC5838C00DAE48A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DADC18F1DC5838C00DAE48A /* User.swift */; };
+		1DB5DA4C1DCD4CB600842664 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */; };
 		A140FD5FDF139BC37D5AF180 /* Pods_StanByMe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +41,24 @@
 		1D0611FA1DC47EE900720E82 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1D0611FE1DC491F300720E82 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		1D0612001DC4A18100720E82 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		1D6D1A041DC9E7BD00375810 /* StanByMe-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StanByMe-Bridging-Header.h"; sourceTree = "<group>"; };
+		1D6D1ABB1DC9F2B200375810 /* GeoFire.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoFire.h; sourceTree = "<group>"; };
+		1D6D1ABC1DC9F2B200375810 /* GFCircleQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFCircleQuery.h; sourceTree = "<group>"; };
+		1D6D1ABD1DC9F2B200375810 /* GFQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFQuery.h; sourceTree = "<group>"; };
+		1D6D1ABE1DC9F2B200375810 /* GFRegionQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFRegionQuery.h; sourceTree = "<group>"; };
+		1D6D1ABF1DC9F2B200375810 /* GeoFire-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GeoFire-Prefix.pch"; sourceTree = "<group>"; };
+		1D6D1AC11DC9F2B200375810 /* GeoFire+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GeoFire+Private.h"; sourceTree = "<group>"; };
+		1D6D1AC21DC9F2B200375810 /* GeoFire.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoFire.m; sourceTree = "<group>"; };
+		1D6D1AC31DC9F2B200375810 /* GFBase32Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFBase32Utils.h; sourceTree = "<group>"; };
+		1D6D1AC41DC9F2B200375810 /* GFBase32Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFBase32Utils.m; sourceTree = "<group>"; };
+		1D6D1AC51DC9F2B200375810 /* GFGeoHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFGeoHash.h; sourceTree = "<group>"; };
+		1D6D1AC61DC9F2B200375810 /* GFGeoHash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFGeoHash.m; sourceTree = "<group>"; };
+		1D6D1AC71DC9F2B200375810 /* GFGeoHashQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFGeoHashQuery.h; sourceTree = "<group>"; };
+		1D6D1AC81DC9F2B200375810 /* GFGeoHashQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFGeoHashQuery.m; sourceTree = "<group>"; };
+		1D6D1AC91DC9F2B200375810 /* GFQuery+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GFQuery+Private.h"; sourceTree = "<group>"; };
+		1D6D1ACA1DC9F2B200375810 /* GFQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFQuery.m; sourceTree = "<group>"; };
 		1DADC18F1DC5838C00DAE48A /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StanByMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE3425D57ADB101131646143 /* Pods-StanByMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StanByMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-StanByMe/Pods-StanByMe.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -45,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1DB5DA4C1DCD4CB600842664 /* CoreLocation.framework in Frameworks */,
 				A140FD5FDF139BC37D5AF180 /* Pods_StanByMe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -73,6 +97,7 @@
 		1D0611E31DC4748000720E82 /* StanByMe */ = {
 			isa = PBXGroup;
 			children = (
+				1D6D1AB91DC9F2B200375810 /* GeoFire */,
 				1DADC18F1DC5838C00DAE48A /* User.swift */,
 				1D0611FE1DC491F300720E82 /* SignInViewController.swift */,
 				1D0611FA1DC47EE900720E82 /* Constants.swift */,
@@ -85,13 +110,53 @@
 				1D0611EB1DC4748000720E82 /* Assets.xcassets */,
 				1D0611ED1DC4748000720E82 /* LaunchScreen.storyboard */,
 				1D0611F01DC4748000720E82 /* Info.plist */,
+				1D6D1A041DC9E7BD00375810 /* StanByMe-Bridging-Header.h */,
 			);
 			path = StanByMe;
+			sourceTree = "<group>";
+		};
+		1D6D1AB91DC9F2B200375810 /* GeoFire */ = {
+			isa = PBXGroup;
+			children = (
+				1D6D1ABA1DC9F2B200375810 /* API */,
+				1D6D1ABF1DC9F2B200375810 /* GeoFire-Prefix.pch */,
+				1D6D1AC01DC9F2B200375810 /* Implementation */,
+			);
+			path = GeoFire;
+			sourceTree = "<group>";
+		};
+		1D6D1ABA1DC9F2B200375810 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				1D6D1ABB1DC9F2B200375810 /* GeoFire.h */,
+				1D6D1ABC1DC9F2B200375810 /* GFCircleQuery.h */,
+				1D6D1ABD1DC9F2B200375810 /* GFQuery.h */,
+				1D6D1ABE1DC9F2B200375810 /* GFRegionQuery.h */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		1D6D1AC01DC9F2B200375810 /* Implementation */ = {
+			isa = PBXGroup;
+			children = (
+				1D6D1AC11DC9F2B200375810 /* GeoFire+Private.h */,
+				1D6D1AC21DC9F2B200375810 /* GeoFire.m */,
+				1D6D1AC31DC9F2B200375810 /* GFBase32Utils.h */,
+				1D6D1AC41DC9F2B200375810 /* GFBase32Utils.m */,
+				1D6D1AC51DC9F2B200375810 /* GFGeoHash.h */,
+				1D6D1AC61DC9F2B200375810 /* GFGeoHash.m */,
+				1D6D1AC71DC9F2B200375810 /* GFGeoHashQuery.h */,
+				1D6D1AC81DC9F2B200375810 /* GFGeoHashQuery.m */,
+				1D6D1AC91DC9F2B200375810 /* GFQuery+Private.h */,
+				1D6D1ACA1DC9F2B200375810 /* GFQuery.m */,
+			);
+			path = Implementation;
 			sourceTree = "<group>";
 		};
 		77F8BA837A60897DFB9A91B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */,
 				22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */,
 			);
 			name = Frameworks;
@@ -141,6 +206,7 @@
 				TargetAttributes = {
 					1D0611E01DC4748000720E82 = {
 						CreatedOnToolsVersion = 8.0;
+						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -232,11 +298,16 @@
 			files = (
 				1D0611F91DC47ED700720E82 /* AppState.swift in Sources */,
 				1D0611E71DC4748000720E82 /* ListViewController.swift in Sources */,
+				1D6D1ACD1DC9F2B200375810 /* GFGeoHash.m in Sources */,
+				1D6D1ACF1DC9F2B200375810 /* GFQuery.m in Sources */,
 				1D0611E51DC4748000720E82 /* AppDelegate.swift in Sources */,
 				1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */,
 				1D0612011DC4A18100720E82 /* ChatViewController.swift in Sources */,
+				1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */,
 				1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */,
 				1DADC1901DC5838C00DAE48A /* User.swift in Sources */,
+				1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */,
+				1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,11 +431,14 @@
 			baseConfigurationReference = 027821B985831093DDBDCC6A /* Pods-StanByMe.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = StanByMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stanmation.StanByMe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "StanByMe/StanByMe-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -374,11 +448,13 @@
 			baseConfigurationReference = EE3425D57ADB101131646143 /* Pods-StanByMe.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = StanByMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stanmation.StanByMe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "StanByMe/StanByMe-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

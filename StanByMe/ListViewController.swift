@@ -8,41 +8,109 @@
 
 import UIKit
 import Firebase
-
-
+import MapKit
 
 class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     // Instance variables
     var ref: FIRDatabaseReference!
-    var users: [FIRDataSnapshot]! = []
+    var users = [FIRDataSnapshot] ()
+
+    var closestUsers = [String: CLLocation]()
+
     var partnerUID: String?
     fileprivate var _refHandle: FIRDatabaseHandle!
     
     var storageRef: FIRStorageReference!
     var remoteConfig: FIRRemoteConfig!
+    var geoFire: GeoFire?
+    
+    let locationManager = CLLocationManager()
     
     @IBOutlet weak var myTableView: UITableView!
+    
+    @IBOutlet weak var mapView: MKMapView!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
 
         configureDatabase()
         configureStorage()
         configureRemoteConfig()
         fetchConfig()
+        
+        mapView.showsUserLocation = true
+        locationManager.requestWhenInUseAuthorization()
 
     }
+    
+    
+    @IBAction func buttonTestPressed(_ sender: AnyObject) {
+        let coordinate0 = CLLocation(latitude: 37.7853889, longitude: -122.4056973)
+
+        var coordinate1 = CLLocation()
+
+        for closestUser in closestUsers {
+            coordinate1 = closestUser.value
+            let distanceInMeters = coordinate0.distance(from: coordinate1)
+            let distanceInKm = distanceInMeters/1000
+            print("distance: \(distanceInKm)")
+        }
+        
+    }
+    
 
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
+
         // Listen for new messages in the Firebase database
-        _refHandle = self.ref.child("users").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+//        _refHandle = ref.child("users").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+//            guard let strongSelf = self else { return }
+//            //            strongSelf.users.append(snapshot)
+//            //            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.users.count-1, section: 0)], with: .automatic)
+//            })
+        
+        // set current user location
+        let userID = FIRAuth.auth()?.currentUser?.uid
+        geoFire = GeoFire(firebaseRef: ref.child("locations"))
+        geoFire?.setLocation(CLLocation(latitude: 37.7853889, longitude: -122.4056973), forKey: userID!)
+        
+        // set temp users Locations to test out the location
+        setTempUserLocations()
+        
+        // find closest users
+        let center = CLLocation(latitude: 37.7832889, longitude: -122.4056973)
+        let circleQuery = geoFire?.query(at: center, withRadius: 1)
+        
+        
+        // current user coordinate
+        let coordinate0 = CLLocation(latitude: 37.7853889, longitude: -122.4056973)
+
+        
+        circleQuery?.observe(.keyEntered, with: { [weak self] (key, location) in
             guard let strongSelf = self else { return }
-            strongSelf.users.append(snapshot)
-            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.users.count-1, section: 0)], with: .automatic)
-            })
+            let distanceInMeter = location!.distance(from: coordinate0)
+            print("distance for \(key): \(distanceInMeter)")
+            strongSelf.closestUsers[key!] = location!
+            
+        })
+        
+        _refHandle = ref.child("users").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+            guard let strongSelf = self else { return }
+            let key = snapshot.key
+            if strongSelf.closestUsers[key] != nil && (snapshot.childSnapshot(forPath: "aboutMe").value! as! String) == "nothing" {
+                strongSelf.users.append(snapshot)
+                strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.users.count-1, section: 0)], with: .automatic)
+            }
+        })
+
+    }
+    
+    func setTempUserLocations() {
+        geoFire = GeoFire(firebaseRef: ref.child("locations"))
+        geoFire?.setLocation(CLLocation(latitude: 37.7853900, longitude: -122.4056500), forKey: "usLQsZlVv2Nl29Q999aZs6iUqRl2")
     }
     
     func configureStorage() {
@@ -98,7 +166,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // Dequeue cell
         let cell = self.myTableView.dequeueReusableCell(withIdentifier: "tableViewCell") as UITableViewCell!
         // Unpack message from Firebase DataSnapshot
-        let userSnapshot: FIRDataSnapshot! = self.users[indexPath.row]
+        let userSnapshot: FIRDataSnapshot! = users[indexPath.row]
         let user = userSnapshot.value as! Dictionary<String, String>
         let nickname = user[Constants.Users.nickname] as String!
 
@@ -113,7 +181,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let user = userSnapshot.value as! Dictionary<String, String>
         partnerUID = user["uid"]! as String
         
-        
         performSegue(withIdentifier: Constants.Segues.ToChatVC, sender: nil)
 
     }
@@ -125,7 +192,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
             controller.partnerUID = partnerUID
         }
     }
-    
     
     
     @IBAction func signOut(_ sender: UIButton) {

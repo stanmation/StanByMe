@@ -16,6 +16,7 @@
 
 import Foundation
 
+
 class AppState: NSObject {
 
   static let sharedInstance = AppState()
