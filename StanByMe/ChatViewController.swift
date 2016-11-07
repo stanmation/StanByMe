@@ -11,14 +11,12 @@ import Firebase
 
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
-    // Instance variables
     @IBOutlet weak var newMessageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     var ref: FIRDatabaseReference!
-    var messages: [FIRDataSnapshot]! = []
-    var currentUserData: FIRDataSnapshot!
-    var partnerUserData: FIRDataSnapshot!
-
+    var messages = [FIRDataSnapshot]()
+    var currentUserData = FIRDataSnapshot()
+    var partnerUserData = FIRDataSnapshot()
 
     fileprivate var _userMessageRefHandle: FIRDatabaseHandle!
     fileprivate var _currentUserRefHandle: FIRDatabaseHandle!
@@ -48,32 +46,30 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         ref = FIRDatabase.database().reference()
         
         // get the userID
-        let userID = FIRAuth.auth()?.currentUser?.uid
-        
+        let currentUserID = FIRAuth.auth()?.currentUser?.uid
+ 
         // Listen for new messages in the Firebase database
 
-        _userMessageRefHandle = self.ref.child("user-messages").child(userID!).child(partnerUID).observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+        _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).observe(.childAdded, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.messages.append(snapshot)
-            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
+//            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
+            strongSelf.myTableView.reloadData()
         })
         
-        
         _currentUserRefHandle = ref.child("users").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
-            
             guard let strongSelf = self else { return }
-            
             let dict = snapshot.value as! Dictionary<String, String>
-            
-            if let uid = dict["uid"] as String! {
-                if uid == userID {
-                    strongSelf.currentUserData=snapshot
+            if let uid = dict[Constants.Users.UID] as String! {
+                if uid == currentUserID {
+                    strongSelf.currentUserData = snapshot
                 } else if uid == strongSelf.partnerUID {
-                    strongSelf.partnerUserData=snapshot
+                    strongSelf.partnerUserData = snapshot
                 }
             }
             
         })
+        
         
 
     }
@@ -96,9 +92,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Unpack message from Firebase DataSnapshot
         let messageSnapshot: FIRDataSnapshot! = self.messages[indexPath.row]
         let message = messageSnapshot.value as! Dictionary<String, String>
-        let nickname = message[Constants.MessageFields.nickname] as String!
+        let nickname = message[Constants.MessageFields.Nickname] as String!
 
-        let text = message[Constants.MessageFields.text] as String!
+        let text = message[Constants.MessageFields.Text] as String!
         cell?.textLabel?.text = nickname! + ": " + text!
 
         return cell!
@@ -107,38 +103,43 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     // UITextViewDelegate protocol methods
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
-        // get the current nickname & UID
-        
-        let dict = currentUserData.value as! Dictionary<String, String>
 
-        let currentUserNickname = dict["nickname"] as String!
-        let currentUID = dict["uid"] as String!
-
-        sendMessage(userID: currentUID!, nickname: currentUserNickname!, text: textField.text!)
+        sendMessage(text: textField.text!)
         textField.text = ""
         
-        print(currentUserData)
-
         return true
     }
     
-    func sendMessage(userID: String, nickname: String, text: String) {
+    func sendMessage(text: String) {
         
-        var mdata = [String: String]()
-        mdata[Constants.MessageFields.nickname] = nickname
-        mdata["uid"] = userID
-        mdata[Constants.MessageFields.text] = text
-        
-        // grab the partner data
-        let dict = partnerUserData.value as! Dictionary<String, String>
+        // set up current user data
+        let currentUserDict = self.currentUserData.value as! Dictionary<String, String>
+        let currentUserNickname = currentUserDict[Constants.MessageFields.Nickname] as String!
+        let currentUserUID = currentUserDict[Constants.MessageFields.UID] as String!
 
-        if let partnerNickname = dict["nickname"] as String! {
-            mdata["partnerNickname"] = partnerNickname
+        var myData = [String: String]()
+        myData[Constants.MessageFields.Nickname] = currentUserNickname
+        myData[Constants.MessageFields.UID] = currentUserUID
+        myData[Constants.MessageFields.Text] = text
+        
+        let partnerDict = partnerUserData.value as! Dictionary<String, String>
+
+        if let partnerNickname = partnerDict[Constants.MessageFields.Nickname] as String! {
+            myData[Constants.MessageFields.PartnerNickname] = partnerNickname
         }
+        
+        // set up partner data
+
+        var partnerData = [String: String]()
+        partnerData[Constants.MessageFields.Nickname] = currentUserNickname
+            partnerData[Constants.MessageFields.UID] = partnerUID
+        partnerData[Constants.MessageFields.Text] = text
+        partnerData[Constants.MessageFields.PartnerNickname] = partnerDict[Constants.MessageFields.Nickname]
+
+        
         // Push data to Firebase Database
-        ref.child("user-messages").child(userID).child(partnerUID).childByAutoId().setValue(mdata)
-        ref.child("user-messages").child(partnerUID).child(userID).childByAutoId().setValue(mdata)
+        ref.child("user-messages").child(currentUserUID!).child(partnerUID).childByAutoId().setValue(myData)
+        ref.child("user-messages").child(partnerUID).child(currentUserUID!).childByAutoId().setValue(partnerData)
         
 
     }

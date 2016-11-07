@@ -24,6 +24,7 @@
 		1D6D1ACF1DC9F2B200375810 /* GFQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1ACA1DC9F2B200375810 /* GFQuery.m */; };
 		1DADC1901DC5838C00DAE48A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DADC18F1DC5838C00DAE48A /* User.swift */; };
 		1DB5DA4C1DCD4CB600842664 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */; };
+		1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DBF38691DD0822D00E5406A /* SignUpViewController.swift */; };
 		A140FD5FDF139BC37D5AF180 /* Pods_StanByMe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 		1D6D1ACA1DC9F2B200375810 /* GFQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFQuery.m; sourceTree = "<group>"; };
 		1DADC18F1DC5838C00DAE48A /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		1DBF38691DD0822D00E5406A /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StanByMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE3425D57ADB101131646143 /* Pods-StanByMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StanByMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-StanByMe/Pods-StanByMe.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -100,6 +102,7 @@
 				1D6D1AB91DC9F2B200375810 /* GeoFire */,
 				1DADC18F1DC5838C00DAE48A /* User.swift */,
 				1D0611FE1DC491F300720E82 /* SignInViewController.swift */,
+				1DBF38691DD0822D00E5406A /* SignUpViewController.swift */,
 				1D0611FA1DC47EE900720E82 /* Constants.swift */,
 				1D0611F81DC47ED700720E82 /* AppState.swift */,
 				1D0611F61DC4781400720E82 /* GoogleService-Info.plist */,
@@ -307,6 +310,7 @@
 				1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */,
 				1DADC1901DC5838C00DAE48A /* User.swift in Sources */,
 				1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */,
+				1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */,
 				1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

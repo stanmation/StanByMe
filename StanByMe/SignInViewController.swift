@@ -15,7 +15,6 @@
 //
 
 import UIKit
-
 import Firebase
 
 @objc(SignInViewController)
@@ -94,7 +93,7 @@ class SignInViewController: UIViewController {
     AppState.sharedInstance.signedIn = true
     let notificationName = Notification.Name(rawValue: Constants.NotificationKeys.SignedIn)
     NotificationCenter.default.post(name: notificationName, object: nil, userInfo: nil)
-    performSegue(withIdentifier: Constants.Segues.SignInToFp, sender: nil)
+    performSegue(withIdentifier: Constants.Segues.SignInToApp, sender: nil)
   }
 
 }

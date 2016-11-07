@@ -1,11 +1,18 @@
 //: Playground - noun: a place where people can play
 
 import CoreLocation
+import UIKit
+
+let ref = FIRDatabase.database().reference()
 
 
-let coordinate0 = CLLocation(latitude: 5.0, longitude: 5.0)
-let coordinate1 = CLLocation(latitude: 5.0, longitude: 3.0)
-
-let distanceInMeters = coordinate0.distance(from: coordinate1)
-
-let distanceInKm = distanceInMeters/1000
+ref.child("users").child(userID!).observeSingleEvent(of: .value, with: { (snapshot) in
+    // Get user value
+    let value = snapshot.value as? NSDictionary
+    let username = value?["username"] as! String
+    let user = User.init(username: username)
+    
+    // ...
+}) { (error) in
+    print(error.localizedDescription)
+}

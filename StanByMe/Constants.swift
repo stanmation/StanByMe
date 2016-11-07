@@ -21,19 +21,24 @@ struct Constants {
     }
 
     struct Segues {
-        static let SignInToFp = "SignInToFP"
+        static let SignInToApp = "SignInToApp"
         static let FpToSignIn = "FPToSignIn"
         static let ToChatVC = "toChatSeque"
     }
         
     struct Users {
-        static let nickname = "nickname"
+        static let Nickname = "nickname"
+        static let UID = "uid"
     }
+    
 
     struct MessageFields {
-        static let nickname = "nickname"
-        static let text = "text"
-        static let photoURL = "photoURL"
-        static let imageURL = "imageURL"
+        static let Nickname = "nickname"
+        static let Text = "text"
+        static let PhotoURL = "photoURL"
+        static let ImageURL = "imageURL"
+        static let PartnerNickname = "partnerNickname"
+        static let UID = "uid"
+
     }
 }

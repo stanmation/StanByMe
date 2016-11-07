@@ -10,11 +10,10 @@ import UIKit
 import Firebase
 import MapKit
 
-class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CLLocationManagerDelegate {
     
-    // Instance variables
     var ref: FIRDatabaseReference!
-    var users = [FIRDataSnapshot] ()
+    var users:[FIRDataSnapshot]?
 
     var closestUsers = [String: CLLocation]()
 
@@ -26,83 +25,78 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var geoFire: GeoFire?
     
     let locationManager = CLLocationManager()
+    var currentUserLocation = CLLocation()
     
     @IBOutlet weak var myTableView: UITableView!
-    
-    @IBOutlet weak var mapView: MKMapView!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-
-        configureDatabase()
+        let currentUserEmail = FIRAuth.auth()?.currentUser?.email
+        title = currentUserEmail
+        
         configureStorage()
         configureRemoteConfig()
         fetchConfig()
+        ref = FIRDatabase.database().reference()
+        users = [FIRDataSnapshot]()
         
-        mapView.showsUserLocation = true
+        // configure location manager
+        locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
-
+        locationManager.stopUpdatingLocation()
+        
+//        closestUsers ["usLQsZlVv2Nl29Q999aZs6iUqRl2"] = CLLocation(latitude: -34.863399999999999, longitude: 150.21100000000001)
+//        closestUsers ["YZRqyFnrNATMvcvl1F3bcQMSxwk1"] = CLLocation(latitude: -34.863399999999999, longitude: 150.21100000000001)
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        locationManager.startUpdatingLocation()
     }
     
     
     @IBAction func buttonTestPressed(_ sender: AnyObject) {
-        let coordinate0 = CLLocation(latitude: 37.7853889, longitude: -122.4056973)
 
-        var coordinate1 = CLLocation()
-
-        for closestUser in closestUsers {
-            coordinate1 = closestUser.value
-            let distanceInMeters = coordinate0.distance(from: coordinate1)
-            let distanceInKm = distanceInMeters/1000
-            print("distance: \(distanceInKm)")
-        }
-        
     }
-    
 
     func configureDatabase() {
-        ref = FIRDatabase.database().reference()
-
-        // Listen for new messages in the Firebase database
-//        _refHandle = ref.child("users").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
-//            guard let strongSelf = self else { return }
-//            //            strongSelf.users.append(snapshot)
-//            //            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.users.count-1, section: 0)], with: .automatic)
-//            })
         
-        // set current user location
-        let userID = FIRAuth.auth()?.currentUser?.uid
+        // set your user location
+        let currentUserID = FIRAuth.auth()?.currentUser?.uid
         geoFire = GeoFire(firebaseRef: ref.child("locations"))
-        geoFire?.setLocation(CLLocation(latitude: 37.7853889, longitude: -122.4056973), forKey: userID!)
+        geoFire?.setLocation(currentUserLocation, forKey: currentUserID!)
         
         // set temp users Locations to test out the location
-        setTempUserLocations()
+//        setTempUserLocations()
         
         // find closest users
-        let center = CLLocation(latitude: 37.7832889, longitude: -122.4056973)
-        let circleQuery = geoFire?.query(at: center, withRadius: 1)
+        let circleQuery = geoFire?.query(at: currentUserLocation, withRadius: 1000)
         
-        
-        // current user coordinate
-        let coordinate0 = CLLocation(latitude: 37.7853889, longitude: -122.4056973)
+        var tempClosestUsers = [String: CLLocation]()
+        var tempUsers = [FIRDataSnapshot]()
 
-        
+        // observe for the closest users within the database
         circleQuery?.observe(.keyEntered, with: { [weak self] (key, location) in
             guard let strongSelf = self else { return }
-            let distanceInMeter = location!.distance(from: coordinate0)
-            print("distance for \(key): \(distanceInMeter)")
-            strongSelf.closestUsers[key!] = location!
-            
-        })
-        
-        _refHandle = ref.child("users").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
-            guard let strongSelf = self else { return }
-            let key = snapshot.key
-            if strongSelf.closestUsers[key] != nil && (snapshot.childSnapshot(forPath: "aboutMe").value! as! String) == "nothing" {
-                strongSelf.users.append(snapshot)
-                strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.users.count-1, section: 0)], with: .automatic)
+            tempClosestUsers[key!] = location!
+            strongSelf.closestUsers = tempClosestUsers
+            strongSelf.ref.child("users").child(key!).observeSingleEvent(of: .value, with: {  (snapshot) in
+//                //ref for using hashtag
+//                if (snapshot.childSnapshot(forPath: "aboutMe").value! as! String) == "test" {
+//                    tempUsers.append(snapshot)
+//
+//                }
+                tempUsers.append(snapshot) // this line will be deleted if we use hashtag
+
+                strongSelf.users = tempUsers
+                strongSelf.myTableView.reloadData()
+
+            }) { (error) in
+                print(error.localizedDescription)
             }
         })
 
@@ -110,7 +104,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func setTempUserLocations() {
         geoFire = GeoFire(firebaseRef: ref.child("locations"))
-        geoFire?.setLocation(CLLocation(latitude: 37.7853900, longitude: -122.4056500), forKey: "usLQsZlVv2Nl29Q999aZs6iUqRl2")
+        geoFire?.setLocation(CLLocation(latitude: -34.863399999999999, longitude: 150.21100000000001), forKey: "usLQsZlVv2Nl29Q999aZs6iUqRl2")
     }
     
     func configureStorage() {
@@ -155,34 +149,64 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
 //        }
     }
     
+    @IBAction func signOutButtonPressed(_ sender: AnyObject) {
+        
+        let firebaseAuth = FIRAuth.auth()
+        do {
+            try firebaseAuth?.signOut()
+            AppState.sharedInstance.signedIn = false
+            locationManager.stopUpdatingLocation()
+            dismiss(animated: true, completion: nil)
+        } catch let signOutError as NSError {
+            print ("Error signing out: \(signOutError.localizedDescription)")
+        }
+    }
     
-    // UITableViewDataSource protocol methods
+    // MARK: data source and delegate methods
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        return users!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         // Dequeue cell
         let cell = self.myTableView.dequeueReusableCell(withIdentifier: "tableViewCell") as UITableViewCell!
-        // Unpack message from Firebase DataSnapshot
-        let userSnapshot: FIRDataSnapshot! = users[indexPath.row]
+        
+        // Unpack users from Firebase DataSnapshot
+        let userSnapshot: FIRDataSnapshot! = users![indexPath.row]
         let user = userSnapshot.value as! Dictionary<String, String>
-        let nickname = user[Constants.Users.nickname] as String!
+        print("users: \(users)")
 
+        let nickname = user[Constants.Users.Nickname] as String!
+        
+        let userLocation = closestUsers[userSnapshot.key]
+        let distanceInMeter = userLocation!.distance(from: currentUserLocation)
+        let distanceInKilometer = distanceInMeter / 1000
+        
         cell?.textLabel?.text = nickname
-        cell?.detailTextLabel?.text = "distance"
+        cell?.detailTextLabel?.text = String(distanceInKilometer) + " km"
+        
 
         return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let userSnapshot: FIRDataSnapshot! = self.users[indexPath.row]
+
+        let userSnapshot: FIRDataSnapshot! = self.users![indexPath.row]
         let user = userSnapshot.value as! Dictionary<String, String>
         partnerUID = user["uid"]! as String
         
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         performSegue(withIdentifier: Constants.Segues.ToChatVC, sender: nil)
 
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [
+        CLLocation]) {
+        currentUserLocation = locations[0] as CLLocation
+        locationManager.stopUpdatingLocation()
+        configureDatabase()
     }
     
     
@@ -192,20 +216,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
             controller.partnerUID = partnerUID
         }
     }
-    
-    
-    @IBAction func signOut(_ sender: UIButton) {
-        let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth?.signOut()
-            AppState.sharedInstance.signedIn = false
-            dismiss(animated: true, completion: nil)
-        } catch let signOutError as NSError {
-            print ("Error signing out: \(signOutError.localizedDescription)")
-        }
-        
-    }
-
 
 }
 
