@@ -1,5 +1,5 @@
 //
-//  ChatViewController.swift
+//  MessageViewController.swift
 //  StanByMe
 //
 //  Created by Stanley Darmawan on 29/10/2016.
@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     @IBOutlet weak var newMessageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!

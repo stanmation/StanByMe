@@ -57,10 +57,10 @@ class SignUpViewController: UIViewController {
         let currentUserID = FIRAuth.auth()?.currentUser?.uid
         
         var currentUserData = [String: String]()
-        currentUserData["nickname"] = nicknameField.text
-        currentUserData["lookingFor"] = lookingForField.text
-        currentUserData["uid"] = currentUserID
-        currentUserData["aboutMe"] = aboutMeField.text
+        currentUserData[Constants.Users.Nickname] = nicknameField.text
+        currentUserData[Constants.Users.LookingFor] = lookingForField.text
+        currentUserData[Constants.Users.UID] = currentUserID
+        currentUserData[Constants.Users.AboutMe] = aboutMeField.text
         
         ref.child("users").child(currentUserID!).setValue(currentUserData)
     }
