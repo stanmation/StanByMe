@@ -13,4 +13,6 @@ class UsersCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var detailTextLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var keywordMatchTextField: UITextField!
+    
 }

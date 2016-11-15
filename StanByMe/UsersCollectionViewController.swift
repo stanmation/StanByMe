@@ -26,12 +26,14 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     var currentUserLocation = CLLocation()
     
     @IBOutlet weak var myCollectionView: UICollectionView!
+    @IBOutlet weak var flowlayout: UICollectionViewFlowLayout!
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let currentUserEmail = FIRAuth.auth()?.currentUser?.email
-        title = currentUserEmail
+        navigationItem.title = currentUserEmail
         
         configureStorage()
 
@@ -42,6 +44,13 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.stopUpdatingLocation()
+        
+        // setup flow layout
+        let space: CGFloat = 5.0
+        let dimension = (self.view.frame.size.width - (2 * space)) / 3.0
+        flowlayout.minimumInteritemSpacing = space
+        flowlayout.minimumLineSpacing = space
+        flowlayout.itemSize = CGSize(width: dimension, height: dimension)
 
     }
     
@@ -49,6 +58,14 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         super.viewDidAppear(animated)
         
         locationManager.startUpdatingLocation()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.destination is UserProfileViewController {
+            
+            let controller = segue.destination as! UserProfileViewController
+            controller.partnerUID = partnerUID
+        }
     }
     
     func configureDatabase() {
@@ -84,7 +101,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             }) { (error) in
                 print(error.localizedDescription)
             }
-            })
+        })
         
     }
     
@@ -129,8 +146,13 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         cell.textLabel?.text = nickname
         cell.detailTextLabel?.text = String(distanceInKilometer) + " km"
         
+        
         if let imageURL = user[Constants.Users.ImageURL] {
+            print("nickname: \(nickname!) and url: \(imageURL)")
+
             if imageURL.hasPrefix("gs://") {
+                print("nickname: \(nickname!) and has prefix")
+
                 FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
                     if let error = error {
                         print("Error downloading: \(error)")
@@ -139,10 +161,14 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                     cell.imageView?.image = UIImage.init(data: data!)
                 }
             } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
+                print("nickname: \(nickname!) and 2nd option")
+
                 cell.imageView?.image = UIImage.init(data: data)
             }
         } else {
-            cell.imageView?.image = UIImage(named: "ic_account_circle")
+            print("nickname: \(nickname!) and ic_account_circle")
+
+            cell.imageView?.image = UIImage(named: "NoImage")
             if let photoURL = user[Constants.Users.ImageURL], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
                 cell.imageView?.image = UIImage(data: data)
             }
@@ -154,9 +180,9 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let userSnapshot: FIRDataSnapshot! = self.users![indexPath.row]
         let user = userSnapshot.value as! Dictionary<String, String>
-        partnerUID = user["uid"]! as String
-        performSegue(withIdentifier: Constants.Segues.ToMessageVC, sender: nil)
+        partnerUID = user[Constants.Users.UID]! as String
 
+        performSegue(withIdentifier: Constants.Segues.ToProfileVC, sender: nil)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [
@@ -167,12 +193,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.destination is MessageViewController {
-            
-            let controller = segue.destination as! MessageViewController
-            controller.partnerUID = partnerUID
-        }
-    }
+
 
 }

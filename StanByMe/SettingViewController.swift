@@ -20,6 +20,9 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     let currentUserUID = FIRAuth.auth()?.currentUser?.uid
     
     @IBOutlet weak var profilePic: UIImageView!
+    @IBOutlet weak var nicknameField: UITextField!
+    @IBOutlet weak var aboutMeField: UITextField!
+    @IBOutlet weak var lookingForField: UITextField!
 
 
     override func viewDidLoad() {
@@ -34,9 +37,10 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         ref = FIRDatabase.database().reference()
         
         // Listen for new messages in the Firebase database
-        _refHandle = self.ref.child("users").child(currentUserUID!).observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+        _refHandle = self.ref.child("users").child(currentUserUID!).observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.currentUserData = snapshot
+            strongSelf.prefillTextBox()
         })
     }
     
@@ -44,6 +48,11 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
     }
     
+    func prefillTextBox() {
+        nicknameField.text = (currentUserData.childSnapshot(forPath: Constants.Users.Nickname).value as? String) ?? ""
+        aboutMeField.text = (currentUserData.childSnapshot(forPath: Constants.Users.AboutMe).value as? String) ?? ""
+        lookingForField.text = (currentUserData.childSnapshot(forPath: Constants.Users.LookingFor).value as? String) ?? ""
+    }
 
     @IBAction func addPhotoButtonPressed(_ sender: AnyObject) {
         let picker = UIImagePickerController()
@@ -55,6 +64,25 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
         present(picker, animated: true, completion:nil)
 
+    }
+    
+    @IBAction func saveButtonPressed(_ sender: AnyObject) {
+        let path = ref.child("users").child(currentUserUID!)
+        path.child(Constants.Users.Nickname).setValue(nicknameField.text)
+        path.child(Constants.Users.AboutMe).setValue(aboutMeField.text)
+        path.child(Constants.Users.LookingFor).setValue(lookingForField.text)
+    }
+    
+    
+    @IBAction func LogOutButtonPressed(_ sender: AnyObject) {
+        let firebaseAuth = FIRAuth.auth()
+        do {
+            try firebaseAuth?.signOut()
+            AppState.sharedInstance.signedIn = false
+            dismiss(animated: true, completion: nil)
+        } catch let signOutError as NSError {
+            print ("Error signing out: \(signOutError.localizedDescription)")
+        }
     }
     
     func setImage(withData data: String) {

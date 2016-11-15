@@ -24,15 +24,16 @@ struct Constants {
         static let SignInToApp = "SignInToApp"
         static let FpToSignIn = "FPToSignIn"
         static let ToMessageVC = "toMessageSeque"
+        static let ToProfileVC = "toProfileSeque"
+
     }
-        
+    
     struct Users {
         static let Nickname = "nickname"
         static let UID = "uid"
         static let LookingFor = "lookingFor"
         static let AboutMe = "aboutMe"
         static let ImageURL = "imageURL"
-
     }
     
 

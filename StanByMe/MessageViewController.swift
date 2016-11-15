@@ -132,7 +132,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         var partnerData = [String: String]()
         partnerData[Constants.MessageFields.Nickname] = currentUserNickname
-            partnerData[Constants.MessageFields.UID] = partnerUID
+        partnerData[Constants.MessageFields.UID] = partnerUID
         partnerData[Constants.MessageFields.Text] = text
         partnerData[Constants.MessageFields.PartnerNickname] = partnerDict[Constants.MessageFields.Nickname]
 

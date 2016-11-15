@@ -39,6 +39,11 @@ class SignUpViewController: UIViewController {
         
     }
     
+    @IBAction func closeButtonTapped(_ sender: AnyObject) {
+        dismiss(animated: true, completion: nil)    
+    }
+    
+    
     func signedIn(_ user: FIRUser?) {
         
         AppState.sharedInstance.displayName = user?.displayName ?? user?.email
