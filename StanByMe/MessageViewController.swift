@@ -53,11 +53,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).observe(.childAdded, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.messages.append(snapshot)
-//            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
-            strongSelf.myTableView.reloadData()
+            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
         })
         
-        _currentUserRefHandle = ref.child("users").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+        _currentUserRefHandle = ref.child("users").observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             let dict = snapshot.value as! Dictionary<String, String>
             if let uid = dict[Constants.Users.UID] as String! {
@@ -69,7 +68,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             
         })
-        
         
 
     }
@@ -93,7 +91,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         let messageSnapshot: FIRDataSnapshot! = self.messages[indexPath.row]
         let message = messageSnapshot.value as! Dictionary<String, String>
         let nickname = message[Constants.MessageFields.Nickname] as String!
+        
 
+        
+        
         let text = message[Constants.MessageFields.Text] as String!
         cell?.textLabel?.text = nickname! + ": " + text!
 

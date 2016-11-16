@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 import Photos
 
-class SettingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class SettingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIAlertViewDelegate {
     
     var storageRef: FIRStorageReference!
     fileprivate var _refHandle: FIRDatabaseHandle!
@@ -40,7 +40,7 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         _refHandle = self.ref.child("users").child(currentUserUID!).observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.currentUserData = snapshot
-            strongSelf.prefillTextBox()
+            strongSelf.prefillData()
         })
     }
     
@@ -48,13 +48,34 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
     }
     
-    func prefillTextBox() {
+    func prefillData() {
         nicknameField.text = (currentUserData.childSnapshot(forPath: Constants.Users.Nickname).value as? String) ?? ""
         aboutMeField.text = (currentUserData.childSnapshot(forPath: Constants.Users.AboutMe).value as? String) ?? ""
         lookingForField.text = (currentUserData.childSnapshot(forPath: Constants.Users.LookingFor).value as? String) ?? ""
+        if let imageURL = (currentUserData.childSnapshot(forPath: Constants.Users.ImageURL).value as? String) {
+            if imageURL.hasPrefix("gs://") {
+                FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
+                    if let error = error {
+                        print("Error downloading: \(error)")
+                        return
+                    }
+                    self.profilePic.image = UIImage.init(data: data!)
+                }
+            } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
+                self.profilePic.image = UIImage.init(data: data)
+            }
+        } else {
+            print("imageURL not available")
+            self.profilePic.image = UIImage(named: "NoImage")
+        }
+    }
+    
+    @IBAction func profilePicTapped(_ sender: AnyObject) {
+        displayAlert(alertType: "profilePic")
+
     }
 
-    @IBAction func addPhotoButtonPressed(_ sender: AnyObject) {
+    func addPhoto() {
         let picker = UIImagePickerController()
         picker.delegate = self
         if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
@@ -143,6 +164,22 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion:nil)
+    }
+    
+    func displayAlert(alertType: String) {
+        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        if alertType == "profilePic" {
+            alert.addAction(UIAlertAction(title: "Select from camera roll", style: .default, handler: { (handler) in
+                self.addPhoto()
+            }))
+            alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { (handler) in
+                self.profilePic.image = UIImage(named: "NoImage")
+                self.ref.child("users").child(self.currentUserUID!).child(Constants.Users.ImageURL).setValue("")
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        }
+        present(alert, animated: true, completion: nil)
+
     }
 
 }

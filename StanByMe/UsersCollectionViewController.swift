@@ -146,13 +146,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         cell.textLabel?.text = nickname
         cell.detailTextLabel?.text = String(distanceInKilometer) + " km"
         
-        
         if let imageURL = user[Constants.Users.ImageURL] {
-            print("nickname: \(nickname!) and url: \(imageURL)")
-
             if imageURL.hasPrefix("gs://") {
-                print("nickname: \(nickname!) and has prefix")
-
                 FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
                     if let error = error {
                         print("Error downloading: \(error)")
@@ -161,13 +156,9 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                     cell.imageView?.image = UIImage.init(data: data!)
                 }
             } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
-                print("nickname: \(nickname!) and 2nd option")
-
                 cell.imageView?.image = UIImage.init(data: data)
             }
         } else {
-            print("nickname: \(nickname!) and ic_account_circle")
-
             cell.imageView?.image = UIImage(named: "NoImage")
             if let photoURL = user[Constants.Users.ImageURL], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
                 cell.imageView?.image = UIImage(data: data)

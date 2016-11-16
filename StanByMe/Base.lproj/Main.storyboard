@@ -442,11 +442,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tKG-3l-GnS">
-                                <frame key="frameInset" minX="16" minY="64" width="43" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="delete"/>
-                            </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="438-XD-Qss">
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -515,15 +510,19 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wT6-n2-lzz">
+                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wT6-n2-lzz">
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="F1V-V2-abV"/>
                                     <constraint firstAttribute="width" constant="130" id="dy5-UU-oZp"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="pRX-eQ-fx1" appends="YES" id="qeg-Sp-Nrm"/>
+                                </connections>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.25691054976935779" green="0.0" blue="0.25897648358585856" alpha="1" colorSpace="calibratedRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="aQZ-oo-gLY" firstAttribute="centerY" secondItem="ANV-8P-8D7" secondAttribute="centerY" id="1cC-KM-qfO"/>
                             <constraint firstItem="uiD-Vm-FcT" firstAttribute="leading" secondItem="ANV-8P-8D7" secondAttribute="leadingMargin" constant="53" id="5qh-RP-ltV"/>
@@ -549,6 +548,9 @@
                             <constraint firstItem="qh2-6a-Pt4" firstAttribute="width" secondItem="16r-ju-ts6" secondAttribute="width" id="xbS-q9-wSg"/>
                             <constraint firstItem="uiD-Vm-FcT" firstAttribute="top" secondItem="22D-tz-P24" secondAttribute="bottom" constant="8" id="zPY-dN-ddF"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="pRX-eQ-fx1" appends="YES" id="MN7-nv-QmZ"/>
+                        </connections>
                     </view>
                     <navigationItem key="navigationItem" id="pS7-Mr-rkK"/>
                     <connections>
@@ -559,6 +561,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="76g-6w-14e" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="pRX-eQ-fx1">
+                    <connections>
+                        <action selector="profilePicTapped:" destination="pYI-lg-06F" id="VmJ-BI-JUQ"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="4317.6000000000004" y="1547.6761619190406"/>
         </scene>
