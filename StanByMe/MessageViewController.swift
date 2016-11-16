@@ -20,6 +20,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     fileprivate var _userMessageRefHandle: FIRDatabaseHandle!
     fileprivate var _currentUserRefHandle: FIRDatabaseHandle!
+    fileprivate var _partnerUserRefHandle: FIRDatabaseHandle!
 
     var partnerUID: String!
     
@@ -39,6 +40,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     deinit {
         self.ref.child("user-messages").removeObserver(withHandle: _userMessageRefHandle)
         self.ref.child("users").removeObserver(withHandle: _currentUserRefHandle)
+        self.ref.child("users").removeObserver(withHandle: _partnerUserRefHandle)
 
     }
     
@@ -47,26 +49,24 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         // get the userID
         let currentUserID = FIRAuth.auth()?.currentUser?.uid
+        
  
         // Listen for new messages in the Firebase database
+        
+        _currentUserRefHandle = ref.child("users").child(currentUserID!).observe(.value, with: { [weak self] (snapshot) -> Void in
+            guard let strongSelf = self else { return }
+            strongSelf.currentUserData = snapshot
+            })
+        
+        _partnerUserRefHandle = ref.child("users").child(partnerUID!).observe(.value, with: { [weak self] (snapshot) -> Void in
+            guard let strongSelf = self else { return }
+            strongSelf.partnerUserData = snapshot
+            })
 
         _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).observe(.childAdded, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.messages.append(snapshot)
             strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
-        })
-        
-        _currentUserRefHandle = ref.child("users").observe(.value, with: { [weak self] (snapshot) -> Void in
-            guard let strongSelf = self else { return }
-            let dict = snapshot.value as! Dictionary<String, String>
-            if let uid = dict[Constants.Users.UID] as String! {
-                if uid == currentUserID {
-                    strongSelf.currentUserData = snapshot
-                } else if uid == strongSelf.partnerUID {
-                    strongSelf.partnerUserData = snapshot
-                }
-            }
-            
         })
         
 
@@ -90,13 +90,23 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Unpack message from Firebase DataSnapshot
         let messageSnapshot: FIRDataSnapshot! = self.messages[indexPath.row]
         let message = messageSnapshot.value as! Dictionary<String, String>
-        let nickname = message[Constants.MessageFields.Nickname] as String!
+//        let nickname = message[Constants.MessageFields.Nickname] as String!
         
-
+        var nickname = String()
         
+        if let status = message["status"] {
+            if status == "sender" {
+                let currentUserDict = self.currentUserData.value as! Dictionary<String, String>
+                nickname = currentUserDict["nickname"]!
+            } else {
+                let partnerUserDict = self.partnerUserData.value as! Dictionary<String, String>
+                nickname = partnerUserDict["nickname"]!
+            }
+        }
         
         let text = message[Constants.MessageFields.Text] as String!
-        cell?.textLabel?.text = nickname! + ": " + text!
+        cell?.textLabel?.text = nickname + ": " + text!
+
 
         return cell!
 
@@ -115,27 +125,17 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         // set up current user data
         let currentUserDict = self.currentUserData.value as! Dictionary<String, String>
-        let currentUserNickname = currentUserDict[Constants.MessageFields.Nickname] as String!
         let currentUserUID = currentUserDict[Constants.MessageFields.UID] as String!
 
         var myData = [String: String]()
-        myData[Constants.MessageFields.Nickname] = currentUserNickname
-        myData[Constants.MessageFields.UID] = currentUserUID
+        myData["status"] = "sender"
         myData[Constants.MessageFields.Text] = text
-        
-        let partnerDict = partnerUserData.value as! Dictionary<String, String>
-
-        if let partnerNickname = partnerDict[Constants.MessageFields.Nickname] as String! {
-            myData[Constants.MessageFields.PartnerNickname] = partnerNickname
-        }
         
         // set up partner data
 
         var partnerData = [String: String]()
-        partnerData[Constants.MessageFields.Nickname] = currentUserNickname
-        partnerData[Constants.MessageFields.UID] = partnerUID
+        partnerData["status"] = "receiver"
         partnerData[Constants.MessageFields.Text] = text
-        partnerData[Constants.MessageFields.PartnerNickname] = partnerDict[Constants.MessageFields.Nickname]
 
         
         // Push data to Firebase Database
