@@ -13,6 +13,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     @IBOutlet weak var newMessageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
+    
     var ref: FIRDatabaseReference!
     var messages = [FIRDataSnapshot]()
     var currentUserData = FIRDataSnapshot()
@@ -63,11 +64,11 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             strongSelf.partnerUserData = snapshot
             })
 
-        _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+        _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).child("messages").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.messages.append(snapshot)
             strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
-        })
+            })
         
 
     }
@@ -85,8 +86,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         // Dequeue cell
         let cell = self.myTableView.dequeueReusableCell(withIdentifier: "tableViewCell") as UITableViewCell!
+        
         // Unpack message from Firebase DataSnapshot
         let messageSnapshot: FIRDataSnapshot! = self.messages[indexPath.row]
         let message = messageSnapshot.value as! Dictionary<String, String>
@@ -94,6 +97,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         var nickname = String()
         
+        print("currentUserData: \(currentUserData), currentMessage: \(messages), partenerData: \(partnerUserData)")
+
         if let status = message["status"] {
             if status == "sender" {
                 let currentUserDict = self.currentUserData.value as! Dictionary<String, String>
@@ -106,7 +111,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         let text = message[Constants.MessageFields.Text] as String!
         cell?.textLabel?.text = nickname + ": " + text!
-
 
         return cell!
 
@@ -138,10 +142,23 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         partnerData[Constants.MessageFields.Text] = text
 
         
-        // Push data to Firebase Database
-        ref.child("user-messages").child(currentUserUID!).child(partnerUID).childByAutoId().setValue(myData)
-        ref.child("user-messages").child(partnerUID).child(currentUserUID!).childByAutoId().setValue(partnerData)
+//        let interval = NSDate().timeIntervalSince1970
+//        let date = NSDate(timeIntervalSince1970: interval)
         
+        let dateformatter = DateFormatter()
+        
+        dateformatter.dateFormat = "MM/dd/yy h:mm a Z"
+        
+        let now = dateformatter.string(from: Date())
+
+        
+        // Push data to Firebase Database
+        ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("messages").childByAutoId().setValue(myData)
+        ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("messages").childByAutoId().setValue(partnerData)
+        
+        // set timeStamp
+        ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("lastUpdate").setValue(now)
+        ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("lastUpdate").setValue(now)
 
     }
     

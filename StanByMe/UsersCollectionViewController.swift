@@ -45,12 +45,13 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         locationManager.requestWhenInUseAuthorization()
         locationManager.stopUpdatingLocation()
         
-        // setup flow layout
+        // setup CollectionView flow layout
         let space: CGFloat = 5.0
         let dimension = (self.view.frame.size.width - (2 * space)) / 3.0
         flowlayout.minimumInteritemSpacing = space
         flowlayout.minimumLineSpacing = space
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
+        
 
     }
     
@@ -58,6 +59,11 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         super.viewDidAppear(animated)
         
         locationManager.startUpdatingLocation()
+        
+        let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
+        DispatchQueue.main.asyncAfter(deadline: when) {
+            print("Users: \(self.users)")
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -74,7 +80,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         let currentUserID = FIRAuth.auth()?.currentUser?.uid
         geoFire = GeoFire(firebaseRef: ref.child("locations"))
         geoFire?.setLocation(currentUserLocation, forKey: currentUserID!)
-
         
         // find closest users
         let circleQuery = geoFire?.query(at: currentUserLocation, withRadius: 1000)
@@ -146,17 +151,13 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         cell.textLabel?.text = nickname
         cell.detailTextLabel?.text = String(distanceInKilometer) + " km"
         
-        if let imageURL = user[Constants.Users.ImageURL] {
-            if imageURL.hasPrefix("gs://") {
-                FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
-                    if let error = error {
-                        print("Error downloading: \(error)")
-                        return
-                    }
-                    cell.imageView?.image = UIImage.init(data: data!)
+        if let imageURL = user[Constants.Users.ImageURL], imageURL.hasPrefix("gs://") {
+            FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
                 }
-            } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
-                cell.imageView?.image = UIImage.init(data: data)
+                cell.imageView?.image = UIImage(data: data!)
             }
         } else {
             cell.imageView?.image = UIImage(named: "NoImage")

@@ -21,6 +21,7 @@
 		1D6D1ACD1DC9F2B200375810 /* GFGeoHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC61DC9F2B200375810 /* GFGeoHash.m */; };
 		1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC81DC9F2B200375810 /* GFGeoHashQuery.m */; };
 		1D6D1ACF1DC9F2B200375810 /* GFQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1ACA1DC9F2B200375810 /* GFQuery.m */; };
+		1D817B8B1DDFBC9E00309161 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D817B8A1DDFBC9E00309161 /* ChatViewController.swift */; };
 		1D87E1231DD472F8003E819B /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D87E1221DD472F8003E819B /* UserProfileViewController.swift */; };
 		1DADC1901DC5838C00DAE48A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DADC18F1DC5838C00DAE48A /* User.swift */; };
 		1DB5DA4C1DCD4CB600842664 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */; };
@@ -60,6 +61,7 @@
 		1D6D1AC81DC9F2B200375810 /* GFGeoHashQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFGeoHashQuery.m; sourceTree = "<group>"; };
 		1D6D1AC91DC9F2B200375810 /* GFQuery+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GFQuery+Private.h"; sourceTree = "<group>"; };
 		1D6D1ACA1DC9F2B200375810 /* GFQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFQuery.m; sourceTree = "<group>"; };
+		1D817B8A1DDFBC9E00309161 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		1D87E1221DD472F8003E819B /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		1DADC18F1DC5838C00DAE48A /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -165,10 +167,11 @@
 				1D0612001DC4A18100720E82 /* MessageViewController.swift */,
 				1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */,
 				1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */,
-				1D0611FE1DC491F300720E82 /* SignInViewController.swift */,
 				1DBF38691DD0822D00E5406A /* SignUpViewController.swift */,
+				1D0611FE1DC491F300720E82 /* SignInViewController.swift */,
 				1DD0090B1DD1C8230035B928 /* SettingViewController.swift */,
 				1D87E1221DD472F8003E819B /* UserProfileViewController.swift */,
+				1D817B8A1DDFBC9E00309161 /* ChatViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -327,6 +330,7 @@
 				1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */,
 				1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */,
 				1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */,
+				1D817B8B1DDFBC9E00309161 /* ChatViewController.swift in Sources */,
 				1DADC1901DC5838C00DAE48A /* User.swift in Sources */,
 				1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */,
 				1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */,
