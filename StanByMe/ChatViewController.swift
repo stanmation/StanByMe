@@ -13,15 +13,13 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var ref: FIRDatabaseReference!
     fileprivate var _refHandle: FIRDatabaseHandle!
-    
     var userMessages = [FIRDataSnapshot]()
-    var users = [FIRDataSnapshot]()
+    var partnerUID: String?
     
     @IBOutlet weak var myTableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         configureDatabase()
     }
@@ -30,6 +28,12 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         super.viewDidAppear(animated)
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.destination is MessageViewController {
+            let controller = segue.destination as! MessageViewController
+            controller.partnerUID = partnerUID
+        }
+    }
     
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
@@ -41,31 +45,20 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
             guard let strongSelf = self else { return }
             
             var tempUserMessages = [FIRDataSnapshot]()
-            var tempUsers = [FIRDataSnapshot]()
             
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
                 for snap in snapshots {
-                    strongSelf.ref.child("users").child(snap.key).observeSingleEvent(of: .value, with: { (userSnapshot) -> Void in
-                        tempUserMessages.append(snap)
-                        tempUsers.append(userSnapshot)
-                        strongSelf.userMessages = tempUserMessages
-                        strongSelf.users = tempUsers
-                        strongSelf.myTableView.reloadData()
-                        if snap == snapshots.last { strongSelf.reverseArray()}
-                    })
+                    tempUserMessages.append(snap)
                 }
             }
-
-
+            
+            strongSelf.userMessages = tempUserMessages
+            strongSelf.myTableView.reloadData()
+            strongSelf.userMessages = strongSelf.userMessages.reversed()
         })
   
     }
 
-    func reverseArray() {
-        userMessages = userMessages.reversed()
-        users = users.reversed()
-
-    }
     
     //MARK: Delegate Methods
     
@@ -74,25 +67,53 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.myTableView.dequeueReusableCell(withIdentifier: "tableViewCell") as UITableViewCell!
+        let cell = self.myTableView.dequeueReusableCell(withIdentifier: "tableViewCell") as! ChatTableViewCell!
         
         // get message data
         let userMessagesSnapshot = userMessages[indexPath.row]
         let messages = userMessagesSnapshot.childSnapshot(forPath: "messages").children.allObjects as! [FIRDataSnapshot]
         let message = messages.last?.value as! [String: String]
-        
         let messageText = message["text"]
         
-        // get user data
-        let userSnapshot = users[indexPath.row].value as! [String: String]
-        let nickname = userSnapshot["nickname"]
-
-        cell?.detailTextLabel?.text = messageText
-        cell?.textLabel?.text = nickname
+        let isRead = userMessagesSnapshot.childSnapshot(forPath: "read").value as! String
         
+        if isRead == "unread" {
+            cell?.backgroundColor = UIColor.red
+        } else {
+            cell?.backgroundColor = UIColor.clear
+        }
+        
+        // get user data
+        let nickname = userMessagesSnapshot.childSnapshot(forPath: "partnerNickname").value as! String
+
+        cell?.nicknameLabel?.text = nickname
+        cell?.messageTextField?.text = messageText
+        
+        if let imageURL = userMessagesSnapshot.childSnapshot(forPath: "imageURL").value as? String, imageURL.hasPrefix("gs://") {
+            FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
+                }
+                cell?.profileImageView?.image = UIImage(data: data!)
+            }
+        } else {
+            cell?.profileImageView?.image = UIImage(named: "NoImage")
+        }
+
         return cell!
         
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let userMessagesSnapshot = userMessages[indexPath.row]
+        partnerUID = userMessagesSnapshot.key
+        tableView.deselectRow(at: indexPath, animated: false)
+        performSegue(withIdentifier: Constants.Segues.ToMessageVC, sender: nil)
+    }
+    
+    
+    
 
 
 }

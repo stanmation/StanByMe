@@ -23,6 +23,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     fileprivate var _currentUserRefHandle: FIRDatabaseHandle!
     fileprivate var _partnerUserRefHandle: FIRDatabaseHandle!
 
+    var currentUserID: String!
     var partnerUID: String!
     
     var storageRef: FIRStorageReference!
@@ -38,6 +39,11 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         configureStorage()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        navigationController?.popToRootViewController(animated: false)
+    }
+    
     deinit {
         self.ref.child("user-messages").removeObserver(withHandle: _userMessageRefHandle)
         self.ref.child("users").removeObserver(withHandle: _currentUserRefHandle)
@@ -49,29 +55,39 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         ref = FIRDatabase.database().reference()
         
         // get the userID
-        let currentUserID = FIRAuth.auth()?.currentUser?.uid
+        currentUserID = FIRAuth.auth()?.currentUser?.uid
         
- 
-        // Listen for new messages in the Firebase database
+
+        
+        // get user snapshot
         
         _currentUserRefHandle = ref.child("users").child(currentUserID!).observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.currentUserData = snapshot
+            strongSelf.getPartnerSnapshot()
             })
-        
+
+    }
+    
+    func getPartnerSnapshot() {
         _partnerUserRefHandle = ref.child("users").child(partnerUID!).observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.partnerUserData = snapshot
+            strongSelf.getMessagesSnapshot()
             })
+        
+    }
+    
+    func getMessagesSnapshot() {
 
         _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).child("messages").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.messages.append(snapshot)
             strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
             })
-        
 
     }
+    
     
     func configureStorage() {
         storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
@@ -93,7 +109,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Unpack message from Firebase DataSnapshot
         let messageSnapshot: FIRDataSnapshot! = self.messages[indexPath.row]
         let message = messageSnapshot.value as! Dictionary<String, String>
-//        let nickname = message[Constants.MessageFields.Nickname] as String!
         
         var nickname = String()
         
@@ -116,6 +131,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     }
 
+    
+
     // UITextViewDelegate protocol methods
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 
@@ -124,6 +141,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         return true
     }
+    
     
     func sendMessage(text: String) {
         
@@ -141,14 +159,9 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         partnerData["status"] = "receiver"
         partnerData[Constants.MessageFields.Text] = text
 
-        
-//        let interval = NSDate().timeIntervalSince1970
-//        let date = NSDate(timeIntervalSince1970: interval)
-        
+        // setup the date
         let dateformatter = DateFormatter()
-        
         dateformatter.dateFormat = "MM/dd/yy h:mm a Z"
-        
         let now = dateformatter.string(from: Date())
 
         
@@ -159,7 +172,16 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         // set timeStamp
         ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("lastUpdate").setValue(now)
         ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("lastUpdate").setValue(now)
-
+        
+        // set the read key to "read" in user-messages
+        ref.child("user-messages").child(currentUserID!).child(partnerUID).child("read").setValue("read")
+        
+        // set partner data in user-messages
+        let partnerUserDict = partnerUserData.value as! [String: String]
+        let partnerNickname = partnerUserDict["nickname"]!
+        ref.child("user-messages").child(currentUserID!).child(partnerUID).child("partnerNickname").setValue(partnerNickname)
+        let partnerImageURL = partnerUserDict["imageURL"]!
+        ref.child("user-messages").child(currentUserID!).child(partnerUID).child("imageURL").setValue(partnerImageURL)
     }
     
 

@@ -114,18 +114,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
     }
     
-    
-    @IBAction func signOutButtonPressed(_ sender: AnyObject) {
-        let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth?.signOut()
-            AppState.sharedInstance.signedIn = false
-            locationManager.stopUpdatingLocation()
-            dismiss(animated: true, completion: nil)
-        } catch let signOutError as NSError {
-            print ("Error signing out: \(signOutError.localizedDescription)")
-        }
-    }
 
     
     // MARK: Delegate methods
@@ -185,6 +173,21 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     
-
+    // TEMP
+    
+    func getImageName() {
+        let myIndexPaths = myCollectionView.indexPathsForVisibleItems
+        for myIndexPath in myIndexPaths {
+            let cell = myCollectionView.cellForItem(at: myIndexPath) as! UsersCollectionViewCell
+            print("Image for \(myIndexPath): \(cell.imageView.image)")
+            
+            
+        }
+    }
+    
+    @IBAction func testButtonTapped(_ sender: AnyObject) {
+        getImageName()
+    }
+    
 
 }
