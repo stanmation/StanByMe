@@ -89,8 +89,8 @@ class ChatViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell?.nicknameLabel?.text = nickname
         cell?.messageTextField?.text = messageText
         
-        if let imageURL = userMessagesSnapshot.childSnapshot(forPath: "imageURL").value as? String, imageURL.hasPrefix("gs://") {
-            FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
+        if let thumbnailURL = userMessagesSnapshot.childSnapshot(forPath: Constants.MessageFields.ThumbnailURL).value as? String, thumbnailURL.hasPrefix("gs://") {
+            FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
                     return

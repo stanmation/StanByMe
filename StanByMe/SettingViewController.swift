@@ -52,17 +52,13 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         nicknameField.text = (currentUserData.childSnapshot(forPath: Constants.Users.Nickname).value as? String) ?? ""
         aboutMeField.text = (currentUserData.childSnapshot(forPath: Constants.Users.AboutMe).value as? String) ?? ""
         lookingForField.text = (currentUserData.childSnapshot(forPath: Constants.Users.LookingFor).value as? String) ?? ""
-        if let imageURL = (currentUserData.childSnapshot(forPath: Constants.Users.ImageURL).value as? String) {
-            if imageURL.hasPrefix("gs://") {
-                FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
-                    if let error = error {
-                        print("Error downloading: \(error)")
-                        return
-                    }
-                    self.profilePic.image = UIImage.init(data: data!)
+        if let thumbnailURL = currentUserData.childSnapshot(forPath: Constants.Users.ThumbnailURL).value as? String, thumbnailURL.hasPrefix("gs://") {
+            FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
+                if let error = error {
+                    print("Error downloading: \(error)")
+                    return
                 }
-            } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
-                self.profilePic.image = UIImage.init(data: data)
+                self.profilePic.image = UIImage.init(data: data!)
             }
         } else {
             print("imageURL not available")
@@ -106,10 +102,74 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
     }
     
-    func setImage(withData data: String) {
-        
+    func setImageURL(withData data: String) {
         // Push data to Firebase Database
         self.ref.child("users").child(currentUserUID!).child(Constants.Users.ImageURL).setValue(data)
+    }
+    
+    func setThumbnailURL(withData data: String) {
+        // Push data to Firebase Database
+        self.ref.child("users").child(currentUserUID!).child(Constants.Users.ThumbnailURL).setValue(data)
+    }
+    
+
+    // this function will generate thumbnail of profile pic
+    func cropImageToSquare(image: UIImage) -> UIImage {
+
+        let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
+        
+        let contextSize: CGSize = contextImage.size
+        
+        var posX: CGFloat = 0.0
+        var posY: CGFloat = 0.0
+        var cgwidth: CGFloat = 0.0
+        var cgheight: CGFloat = 0.0
+        
+        // see what size is longer and create the center off of that
+        if contextSize.width > contextSize.height {
+            posX = ((contextSize.width - contextSize.height) / 2)
+            posY = 0
+            cgwidth = contextSize.height
+            cgheight = contextSize.height
+        } else {
+            posX = 0
+            posY = ((contextSize.height - contextSize.width) / 2)
+            cgwidth = contextSize.width
+            cgheight = contextSize.width
+        }
+        
+        let rect: CGRect = CGRect(x: posX, y: posY, width: cgwidth, height: cgheight)
+        
+        // create bitmap image from context using the rect
+        let imageRef: CGImage = (contextImage.cgImage?.cropping(to: rect))!
+        let resultedImage: UIImage = UIImage(cgImage: imageRef, scale: image.scale, orientation: image.imageOrientation)
+        
+        return resultedImage
+    }
+    
+    // this function will crop the landscape profile pic
+    func cropLandscapeImage(image: UIImage) -> UIImage {
+        
+        let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
+        let contextSize: CGSize = contextImage.size
+        
+        var posX: CGFloat = 0.0
+        var posY: CGFloat = 0.0
+        var cgwidth: CGFloat = 0.0
+        var cgheight: CGFloat = 0.0
+        
+        posX = ((contextSize.width - (contextSize.height * 1.7778)) / 2)
+        posY = 0
+        cgwidth = contextSize.width / 1.7778
+        cgheight = contextSize.height
+        
+        let rect: CGRect = CGRect(x: posX, y: posY, width: cgwidth, height: cgheight)
+        
+        // create bitmap image from context using the rect
+        let imageRef: CGImage = (contextImage.cgImage?.cropping(to: rect))!
+        let resultedImage: UIImage = UIImage(cgImage: imageRef, scale: image.scale, orientation: image.imageOrientation)
+        
+        return resultedImage
     }
     
     
@@ -117,33 +177,74 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         picker.dismiss(animated: true, completion:nil)
-        
+        var portraitImage: UIImage!
+        var thumbnail: UIImage!
+
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            profilePic.contentMode = .scaleAspectFit
-            profilePic.image = pickedImage
+            if pickedImage.size.width > pickedImage.size.height {
+                portraitImage = cropLandscapeImage(image: pickedImage)
+            } else {
+                portraitImage = pickedImage
+            }
+            
+            let squareImage = cropImageToSquare(image: pickedImage)
+            thumbnail = squareImage.resizeWith(width: 100)
+
+            profilePic.contentMode = .scaleAspectFill
+            profilePic.image = thumbnail
+            
         }
-        
         
         // if it's a photo from the library, not an image from the camera
         if #available(iOS 8.0, *), let referenceURL = info[UIImagePickerControllerReferenceURL] {
-            let assets = PHAsset.fetchAssets(withALAssetURLs: [referenceURL as! URL], options: nil)
-            let asset = assets.firstObject
-            asset?.requestContentEditingInput(with: nil, completionHandler: { [weak self] (contentEditingInput, info) in
-                guard let strongSelf = self else { return }
-                let imageFile = contentEditingInput?.fullSizeImageURL
-                let filePath = "\(strongSelf.currentUserUID!)/Profile/\((referenceURL as AnyObject).lastPathComponent!)"
+//            let assets = PHAsset.fetchAssets(withALAssetURLs: [referenceURL as! URL], options: nil)
+//            let asset = assets.firstObject
+//            asset?.requestContentEditingInput(with: nil, completionHandler: { [weak self] (contentEditingInput, info) in
+//                guard let strongSelf = self else { return }
+//                let imageFile = contentEditingInput?.fullSizeImageURL
+//
+//                let filePath = "\(strongSelf.currentUserUID!)/Profile/\((referenceURL as AnyObject).lastPathComponent!)"
+//
+//                strongSelf.oldPhotoRef = filePath
+//                strongSelf.storageRef.child(filePath)
+//                    .putFile(imageFile!, metadata: nil) { (metadata, error) in
+//                        if let error = error {
+//                            let nsError = error as NSError
+//                            print("Error uploading: \(nsError.localizedDescription)")
+//                            return
+//                        }
+//                        strongSelf.setImage(withData: strongSelf.storageRef.child((metadata?.path)!).description)
+//                    }
+//                })
+            
+            let imageData = UIImageJPEGRepresentation(portraitImage!, 0.8)
+            let thumbnailData = UIImageJPEGRepresentation(thumbnail!, 0.6)
+            let imagePath = "\(currentUserUID!)/Profile/asset.jpg"
+            let thumbnailPath = "\(currentUserUID!)/Thumbnail/asset.jpg"
 
-                strongSelf.oldPhotoRef = filePath
-                strongSelf.storageRef.child(filePath)
-                    .putFile(imageFile!, metadata: nil) { (metadata, error) in
-                        if let error = error {
-                            let nsError = error as NSError
-                            print("Error uploading: \(nsError.localizedDescription)")
-                            return
-                        }
-                        strongSelf.setImage(withData: strongSelf.storageRef.child((metadata?.path)!).description)
+            let metadata = FIRStorageMetadata()
+            metadata.contentType = "image/jpeg"
+            self.storageRef.child(imagePath)
+                .put(imageData!, metadata: metadata) { [weak self] (metadata, error) in
+                    if let error = error {
+                        print("Error uploading: \(error)")
+                        return
                     }
-                })
+                    guard let strongSelf = self else {return}
+                    strongSelf.setImageURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
+            }
+            
+            self.storageRef.child(thumbnailPath)
+                .put(thumbnailData!, metadata: metadata) { [weak self] (metadata, error) in
+                    if let error = error {
+                        print("Error uploading: \(error)")
+                        return
+                    }
+                    guard let strongSelf = self else {return}
+                    strongSelf.setThumbnailURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
+            }
+            
+            
         } else {
             guard let image = info[UIImagePickerControllerOriginalImage] as! UIImage? else { return }
             let imageData = UIImageJPEGRepresentation(image, 0.8)
@@ -157,7 +258,7 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
                         return
                     }
                 guard let strongSelf = self else {return}
-                strongSelf.setImage(withData: strongSelf.storageRef.child((metadata?.path)!).description)
+                strongSelf.setImageURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
             }
         }
     }
@@ -169,7 +270,8 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     func displayAlert(alertType: String) {
         let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
         if alertType == "profilePic" {
-            alert.addAction(UIAlertAction(title: "Select from camera roll", style: .default, handler: { (handler) in
+            alert.title = "Choose your profile picture"
+            alert.addAction(UIAlertAction(title: "Select a picture from camera roll", style: .default, handler: { (handler) in
                 self.addPhoto()
             }))
             alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { (handler) in
@@ -182,4 +284,19 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     }
 
+}
+
+
+extension UIImage {
+    func resizeWith(width: CGFloat) -> UIImage? {
+        let imageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))))
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = self
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, scale)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        imageView.layer.render(in: context)
+        guard let result = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
+        UIGraphicsEndImageContext()
+        return result
+    }
 }

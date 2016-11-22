@@ -25,7 +25,6 @@ struct Constants {
         static let FpToSignIn = "FPToSignIn"
         static let ToMessageVC = "toMessageSeque"
         static let ToProfileVC = "toProfileSeque"
-
     }
     
     struct Users {
@@ -34,6 +33,7 @@ struct Constants {
         static let LookingFor = "lookingFor"
         static let AboutMe = "aboutMe"
         static let ImageURL = "imageURL"
+        static let ThumbnailURL = "thumbnailURL"
     }
     
 
@@ -44,6 +44,7 @@ struct Constants {
         static let ImageURL = "imageURL"
         static let PartnerNickname = "partnerNickname"
         static let UID = "uid"
+        static let ThumbnailURL = "thumbnailURL"
 
     }
 }

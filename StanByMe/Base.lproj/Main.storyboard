@@ -598,9 +598,6 @@
                             <constraint firstItem="qh2-6a-Pt4" firstAttribute="width" secondItem="16r-ju-ts6" secondAttribute="width" id="xbS-q9-wSg"/>
                             <constraint firstItem="uiD-Vm-FcT" firstAttribute="top" secondItem="22D-tz-P24" secondAttribute="bottom" constant="8" id="zPY-dN-ddF"/>
                         </constraints>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="pRX-eQ-fx1" appends="YES" id="MN7-nv-QmZ"/>
-                        </connections>
                     </view>
                     <navigationItem key="navigationItem" id="pS7-Mr-rkK"/>
                     <connections>

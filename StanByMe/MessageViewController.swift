@@ -57,8 +57,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         // get the userID
         currentUserID = FIRAuth.auth()?.currentUser?.uid
         
-
-        
         // get user snapshot
         
         _currentUserRefHandle = ref.child("users").child(currentUserID!).observe(.value, with: { [weak self] (snapshot) -> Void in
@@ -180,8 +178,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         let partnerUserDict = partnerUserData.value as! [String: String]
         let partnerNickname = partnerUserDict["nickname"]!
         ref.child("user-messages").child(currentUserID!).child(partnerUID).child("partnerNickname").setValue(partnerNickname)
-        let partnerImageURL = partnerUserDict["imageURL"]!
-        ref.child("user-messages").child(currentUserID!).child(partnerUID).child("imageURL").setValue(partnerImageURL)
+        let partnerThumbnailURL = partnerUserDict[Constants.Users.ThumbnailURL]!
+        ref.child("user-messages").child(currentUserID!).child(partnerUID).child(Constants.MessageFields.ThumbnailURL).setValue(partnerThumbnailURL)
     }
     
 

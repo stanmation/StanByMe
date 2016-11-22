@@ -24,7 +24,6 @@ class UserProfileViewController: UIViewController {
         getDataFromDB()
     }
     
-
     
     func getDataFromDB() {
         ref.child("users").child(partnerUID).observeSingleEvent(of: .value, with: { [weak self] (snapshot)  in

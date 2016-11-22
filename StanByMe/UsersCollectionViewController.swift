@@ -139,8 +139,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         cell.textLabel?.text = nickname
         cell.detailTextLabel?.text = String(distanceInKilometer) + " km"
         
-        if let imageURL = user[Constants.Users.ImageURL], imageURL.hasPrefix("gs://") {
-            FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
+        if let thumbnailURL = user[Constants.Users.ThumbnailURL], thumbnailURL.hasPrefix("gs://") {
+            FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
                     return
