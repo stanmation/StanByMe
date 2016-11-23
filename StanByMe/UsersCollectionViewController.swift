@@ -51,7 +51,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         flowlayout.minimumInteritemSpacing = space
         flowlayout.minimumLineSpacing = space
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
-        
 
     }
     
@@ -66,6 +65,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is UserProfileViewController {
             
@@ -74,12 +74,26 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
+    func breakingSentenceIntoKeywords(sentence: String) -> [String]{
+        let lowercaseSentence = sentence.lowercased()
+        let arrayString = lowercaseSentence.components(separatedBy: " ")
+        print("arrayString for \(sentence): \(arrayString)")
+        return arrayString
+    }
+    
     func configureDatabase() {
         
         // set your user location
         let currentUserID = FIRAuth.auth()?.currentUser?.uid
         geoFire = GeoFire(firebaseRef: ref.child("locations"))
         geoFire?.setLocation(currentUserLocation, forKey: currentUserID!)
+        
+        var myLookingForArray = [String]()
+        ref.child("users").child(currentUserID!).child("lookingFor").observeSingleEvent(of: .value, with: { [weak self] (snapshot) in
+            guard let strongSelf = self else { return }
+
+            let myLookingForSentence = snapshot.value as! String?
+        })
         
         // find closest users
         let circleQuery = geoFire?.query(at: currentUserLocation, withRadius: 1000)
@@ -98,7 +112,14 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                 //                    tempUsers.append(snapshot)
                 //
                 //                }
-                tempUsers.append(snapshot) // this line will be deleted if we use hashtag
+                let yourAboutMeSentence = snapshot.childSnapshot(forPath: "aboutMe").value as! String
+                let yourAboutMeArray = strongSelf.breakingSentenceIntoKeywords(sentence: yourAboutMeSentence)
+                
+                for keyword in myLookingForArray {
+                    if yourAboutMeArray.contains(keyword) {
+                        tempUsers.append(snapshot)
+                    }
+                }
                 
                 strongSelf.users = tempUsers
                 strongSelf.myCollectionView.reloadData()
@@ -173,7 +194,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     
-    // TEMP
+    // TEMP for debug purposes
     
     func getImageName() {
         let myIndexPaths = myCollectionView.indexPathsForVisibleItems

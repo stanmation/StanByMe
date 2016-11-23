@@ -85,9 +85,9 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     @IBAction func saveButtonPressed(_ sender: AnyObject) {
         let path = ref.child("users").child(currentUserUID!)
-        path.child(Constants.Users.Nickname).setValue(nicknameField.text)
-        path.child(Constants.Users.AboutMe).setValue(aboutMeField.text)
-        path.child(Constants.Users.LookingFor).setValue(lookingForField.text)
+        path.child(Constants.Users.Nickname).setValue(nicknameField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+        path.child(Constants.Users.AboutMe).setValue(aboutMeField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+        path.child(Constants.Users.LookingFor).setValue(lookingForField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
     }
     
     
