@@ -16,6 +16,8 @@
 		1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0611FA1DC47EE900720E82 /* Constants.swift */; };
 		1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0611FE1DC491F300720E82 /* SignInViewController.swift */; };
 		1D0612011DC4A18100720E82 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0612001DC4A18100720E82 /* MessageViewController.swift */; };
+		1D6077691DEC49CA00C6081D /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6077671DEC49CA00C6081D /* Chat.swift */; };
+		1D60776A1DEC49CA00C6081D /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6077681DEC49CA00C6081D /* Chat+CoreDataProperties.swift */; };
 		1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC21DC9F2B200375810 /* GeoFire.m */; };
 		1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC41DC9F2B200375810 /* GFBase32Utils.m */; };
 		1D6D1ACD1DC9F2B200375810 /* GFGeoHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC61DC9F2B200375810 /* GFGeoHash.m */; };
@@ -26,6 +28,11 @@
 		1DADC1901DC5838C00DAE48A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DADC18F1DC5838C00DAE48A /* User.swift */; };
 		1DB5DA4C1DCD4CB600842664 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */; };
 		1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DBF38691DD0822D00E5406A /* SignUpViewController.swift */; };
+		1DC9AB711DE8E93F000EFA3A /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */; };
+		1DC9AB7B1DE8F723000EFA3A /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */; };
+		1DC9AB851DE90273000EFA3A /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */; };
+		1DC9AB921DE93CF2000EFA3A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB8E1DE93CF2000EFA3A /* Message.swift */; };
+		1DC9AB931DE93CF2000EFA3A /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */; };
 		1DCAF84A1DE2F1EA00F844E3 /* ChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCAF8491DE2F1EA00F844E3 /* ChatTableViewCell.swift */; };
 		1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */; };
 		1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */; };
@@ -46,6 +53,8 @@
 		1D0611FA1DC47EE900720E82 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1D0611FE1DC491F300720E82 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		1D0612001DC4A18100720E82 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
+		1D6077671DEC49CA00C6081D /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Chat.swift; path = CoreData/Chat.swift; sourceTree = "<group>"; };
+		1D6077681DEC49CA00C6081D /* Chat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Chat+CoreDataProperties.swift"; path = "CoreData/Chat+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1D6D1A041DC9E7BD00375810 /* StanByMe-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StanByMe-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6D1ABB1DC9F2B200375810 /* GeoFire.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoFire.h; sourceTree = "<group>"; };
 		1D6D1ABC1DC9F2B200375810 /* GFCircleQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFCircleQuery.h; sourceTree = "<group>"; };
@@ -67,6 +76,11 @@
 		1DADC18F1DC5838C00DAE48A /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1DBF38691DD0822D00E5406A /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		1DC9AB701DE8E93F000EFA3A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
+		1DC9AB8E1DE93CF2000EFA3A /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = /Users/stanmation/Documents/XcodeProjects/StanByMe/StanByMe/CoreData/Message.swift; sourceTree = "<absolute>"; };
+		1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "CoreData/Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1DCAF8491DE2F1EA00F844E3 /* ChatTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewCell.swift; sourceTree = "<group>"; };
 		1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewController.swift; sourceTree = "<group>"; };
 		1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -109,6 +123,7 @@
 		1D0611E31DC4748000720E82 /* StanByMe */ = {
 			isa = PBXGroup;
 			children = (
+				1DC9AB6C1DE8E882000EFA3A /* Models */,
 				1DD0090A1DD1C7CA0035B928 /* ViewControllers */,
 				1D6D1AB91DC9F2B200375810 /* GeoFire */,
 				1DADC18F1DC5838C00DAE48A /* User.swift */,
@@ -163,9 +178,23 @@
 			path = Implementation;
 			sourceTree = "<group>";
 		};
+		1DC9AB6C1DE8E882000EFA3A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1D6077671DEC49CA00C6081D /* Chat.swift */,
+				1D6077681DEC49CA00C6081D /* Chat+CoreDataProperties.swift */,
+				1DC9AB8E1DE93CF2000EFA3A /* Message.swift */,
+				1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */,
+				1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */,
+				1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		1DD0090A1DD1C7CA0035B928 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */,
 				1D0612001DC4A18100720E82 /* MessageViewController.swift */,
 				1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */,
 				1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */,
@@ -325,20 +354,27 @@
 				1D0611F91DC47ED700720E82 /* AppState.swift in Sources */,
 				1D6D1ACD1DC9F2B200375810 /* GFGeoHash.m in Sources */,
 				1DD0090C1DD1C8230035B928 /* SettingViewController.swift in Sources */,
+				1DC9AB851DE90273000EFA3A /* CoreDataTableViewController.swift in Sources */,
 				1DCAF84A1DE2F1EA00F844E3 /* ChatTableViewCell.swift in Sources */,
 				1D6D1ACF1DC9F2B200375810 /* GFQuery.m in Sources */,
 				1D87E1231DD472F8003E819B /* UserProfileViewController.swift in Sources */,
 				1D0611E51DC4748000720E82 /* AppDelegate.swift in Sources */,
+				1DC9AB711DE8E93F000EFA3A /* Model.xcdatamodeld in Sources */,
 				1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */,
 				1D0612011DC4A18100720E82 /* MessageViewController.swift in Sources */,
 				1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */,
+				1DC9AB7B1DE8F723000EFA3A /* CoreDataStack.swift in Sources */,
 				1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */,
 				1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */,
+				1D6077691DEC49CA00C6081D /* Chat.swift in Sources */,
 				1D817B8B1DDFBC9E00309161 /* ChatViewController.swift in Sources */,
 				1DADC1901DC5838C00DAE48A /* User.swift in Sources */,
+				1DC9AB921DE93CF2000EFA3A /* Message.swift in Sources */,
 				1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */,
 				1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */,
 				1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */,
+				1D60776A1DEC49CA00C6081D /* Chat+CoreDataProperties.swift in Sources */,
+				1DC9AB931DE93CF2000EFA3A /* Message+CoreDataProperties.swift in Sources */,
 				1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -513,6 +549,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1DC9AB701DE8E93F000EFA3A /* Model.xcdatamodel */,
+			);
+			currentVersion = 1DC9AB701DE8E93F000EFA3A /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 1D0611D91DC4748000720E82 /* Project object */;
 }

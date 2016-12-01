@@ -14,10 +14,26 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    let stack = CoreDataStack(modelName: "Model")!
+
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        print("Doc path: \(paths[0])")
+        
+        stack.autoSave(10)
+        
+        do {
+            try stack.dropAllData()
+        } catch {
+            print("can't drop the data")
+        }
+
+        
         FIRApp.configure()
+        
         return true
     }
 

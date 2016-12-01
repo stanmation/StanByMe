@@ -15,7 +15,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     var users:[FIRDataSnapshot]?
     var closestUsers = [String: CLLocation]()
     
-    var partnerUID: String?
     fileprivate var _refHandle: FIRDatabaseHandle!
     
     var storageRef: FIRStorageReference!
@@ -51,7 +50,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         flowlayout.minimumInteritemSpacing = space
         flowlayout.minimumLineSpacing = space
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -59,10 +57,10 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         
         locationManager.startUpdatingLocation()
         
-        let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
-        DispatchQueue.main.asyncAfter(deadline: when) {
-            print("Users: \(self.users)")
-        }
+//        let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
+//        DispatchQueue.main.asyncAfter(deadline: when) {
+//            print("Users: \(self.users)")
+//        }
     }
     
     
@@ -70,7 +68,16 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         if segue.destination is UserProfileViewController {
             
             let controller = segue.destination as! UserProfileViewController
-            controller.partnerUID = partnerUID
+            let indexPath = myCollectionView.indexPathsForSelectedItems?[0]
+            let user = users?[(indexPath?.row)!].value as! [String: String]
+            controller.user = user
+            
+            // finding the distance of the selected user
+            let userLocation = closestUsers[user["uid"]!]
+            let distanceInMeter = userLocation!.distance(from: currentUserLocation)
+            let distanceInKilometer = distanceInMeter / 1000
+            controller.distance = distanceInKilometer
+
         }
     }
     
@@ -93,6 +100,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             guard let strongSelf = self else { return }
 
             let myLookingForSentence = snapshot.value as! String?
+            myLookingForArray = strongSelf.breakingSentenceIntoKeywords(sentence: myLookingForSentence!)
         })
         
         // find closest users
@@ -107,17 +115,15 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             tempClosestUsers[key!] = location!
             strongSelf.closestUsers = tempClosestUsers
             strongSelf.ref.child("users").child(key!).observeSingleEvent(of: .value, with: {  (snapshot) in
-                //                //ref for using hashtag
-                //                if (snapshot.childSnapshot(forPath: "aboutMe").value! as! String) == "test" {
-                //                    tempUsers.append(snapshot)
-                //
-                //                }
+
                 let yourAboutMeSentence = snapshot.childSnapshot(forPath: "aboutMe").value as! String
                 let yourAboutMeArray = strongSelf.breakingSentenceIntoKeywords(sentence: yourAboutMeSentence)
                 
                 for keyword in myLookingForArray {
                     if yourAboutMeArray.contains(keyword) {
-                        tempUsers.append(snapshot)
+                        if !tempUsers.contains(snapshot) {
+                            tempUsers.append(snapshot)
+                        }
                     }
                 }
                 
@@ -134,8 +140,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     func configureStorage() {
         storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
     }
-    
-
     
     // MARK: Delegate methods
 
@@ -179,9 +183,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let userSnapshot: FIRDataSnapshot! = self.users![indexPath.row]
-        let user = userSnapshot.value as! Dictionary<String, String>
-        partnerUID = user[Constants.Users.UID]! as String
 
         performSegue(withIdentifier: Constants.Segues.ToProfileVC, sender: nil)
     }
@@ -194,7 +195,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     
-    // TEMP for debug purposes
+    // TEMP
     
     func getImageName() {
         let myIndexPaths = myCollectionView.indexPathsForVisibleItems

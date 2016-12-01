@@ -8,60 +8,111 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class UserProfileViewController: UIViewController {
     
-    var partnerUID: String!
-    var ref: FIRDatabaseReference!
+    var chat: Chat?
+    var user: [String: String]!
+    var distance: Double!
     
+    @IBOutlet weak var nicknameLabel: UILabel!
+    @IBOutlet weak var distanceTextField: UITextField!
+    @IBOutlet weak var aboutMeTextView: UITextView!
+    @IBOutlet weak var lookingForTextView: UITextView!
     @IBOutlet weak var profilePicImageView: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ref = FIRDatabase.database().reference()
+        let currentUserID = FIRAuth.auth()?.currentUser?.uid
+        
+        let stack = (UIApplication.shared.delegate as! AppDelegate).stack
 
+        let fr = NSFetchRequest<Chat>(entityName: "Chat")
+        fr.sortDescriptors = []
+        let pred = NSPredicate(format: "currentUserId == %@ && partnerId == %@", currentUserID!, user["uid"]!)
+        fr.predicate = pred
+        
+        guard let chatsFound = try? stack.context.fetch(fr) else {
+            print("An error occurred while retrieving chats")
+            return
+        }
+        
+        if chatsFound != [] {
+            chat = chatsFound[0]
+        }
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let e as NSError {
+            print("Error while trying to perform a search: \n\(e)\n\(fetchedResultsController)")
+        }
+        
+        
         getDataFromDB()
+        fetchUserInfo()
+        
+        title = user["nickname"]
     }
     
     
     func getDataFromDB() {
-        ref.child("users").child(partnerUID).observeSingleEvent(of: .value, with: { [weak self] (snapshot)  in
-            guard let strongSelf = self else { return }
-            
-            let user = snapshot.value as! Dictionary<String, String>
-            if let imageURL = user[Constants.Users.ImageURL] {
-                
-                if imageURL.hasPrefix("gs://") {
-                    
-                    FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
-                        if let error = error {
-                            print("Error downloading: \(error)")
-                            return
-                        }
-                        strongSelf.profilePicImageView.image = UIImage.init(data: data!)
+        if let imageURL = user[Constants.Users.ImageURL] {
+            if imageURL.hasPrefix("gs://") {
+                FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
+                    if let error = error {
+                        print("Error downloading: \(error)")
+                        return
                     }
-                } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
-                    
-                    strongSelf.profilePicImageView.image = UIImage.init(data: data)
+                    self.profilePicImageView.image = UIImage.init(data: data!)
                 }
-            } else {
-                strongSelf.profilePicImageView.image  = UIImage(named: "NoImage")
-                if let photoURL = user[Constants.Users.ImageURL], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
-                    strongSelf.profilePicImageView.image  = UIImage(data: data)
-                }
+            } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
+                
+                self.profilePicImageView.image = UIImage.init(data: data)
             }
-            
-        })
+        } else {
+            self.profilePicImageView.image  = UIImage(named: "NoImage")
+            if let photoURL = user[Constants.Users.ImageURL], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
+                self.profilePicImageView.image  = UIImage(data: data)
+            }
+        }
         
+    }
+    
+    func fetchUserInfo() {
+        nicknameLabel.text = user["nickname"]
         
+        let aboutMeArray = breakingSentenceIntoKeywords(sentence: user["aboutMe"]!)
+        aboutMeTextView.text = "About Me:"
+        for aboutMe in aboutMeArray {
+            aboutMeTextView.text.append("\n\(aboutMe)")
+        }
+        
+        let lookingForArray = breakingSentenceIntoKeywords(sentence: user["lookingFor"]!)
+        lookingForTextView.text = "Looking For:"
+        for lookingFor in lookingForArray {
+            lookingForTextView.text.append("\n\(lookingFor)")
+        }
+        
+        distanceTextField.text = String(distance) + " km"
+
+    }
+    
+    func breakingSentenceIntoKeywords(sentence: String) -> [String]{
+        let lowercaseSentence = sentence.lowercased()
+        let arrayString = lowercaseSentence.components(separatedBy: " ")
+        print("arrayString for \(sentence): \(arrayString)")
+        return arrayString
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is MessageViewController {
-            
             let controller = segue.destination as! MessageViewController
-            controller.partnerUID = partnerUID
+            controller.partnerUID = user["uid"]
+            controller.chat = chat
         }
     }
 
