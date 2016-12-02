@@ -55,15 +55,10 @@ class ChatViewController: CoreDataTableViewController {
         _refHandle = self.ref.child("user-messages").child(currentUserID!).queryOrdered(byChild: "lastUpdate").observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             
-            var tempUserMessages = [FIRDataSnapshot]()
-            
-            print("snapshot: \(snapshot)")
-            
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot] {
                 
                 let fr = NSFetchRequest<Chat>(entityName: "Chat")
                 for snap in snapshots {
-
                     let partnerNickname = snap.childSnapshot(forPath: "partnerNickname").value as! String
                     let partnerId = snap.key
                     strongSelf.partnerUID = partnerId
@@ -109,29 +104,28 @@ class ChatViewController: CoreDataTableViewController {
     }
 
     // this will download the image from Firebase storage
-    func getImage( imagePath:String, completionHandler: @escaping (_ imageData: Data?, _ errorString: String?) -> Void){
-        let session = URLSession.shared
-        let imgURL = URL(string: imagePath)
-        let request: URLRequest = URLRequest(url: imgURL!)
-        
-        let task = session.dataTask(with: request) {data, response, downloadError in
-            
-            if let error = downloadError {
-                completionHandler(nil, "Could not download image \(imagePath)")
-            } else {
-                
-                completionHandler(data, nil)
-            }
-        }
-        
-        task.resume()
-    }
+//    func getImage( imagePath:String, completionHandler: @escaping (_ imageData: Data?, _ errorString: String?) -> Void){
+//        let session = URLSession.shared
+//        let imgURL = URL(string: imagePath)
+//        let request: URLRequest = URLRequest(url: imgURL!)
+//        
+//        let task = session.dataTask(with: request) {data, response, downloadError in
+//            
+//            if let error = downloadError {
+//                completionHandler(nil, "Could not download image \(imagePath)")
+//            } else {
+//                
+//                completionHandler(data, nil)
+//            }
+//        }
+//        
+//        task.resume()
+//    }
     
     //MARK: Delegate Methods
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         
         // Find the right chat for this indexpath
         let chat = fetchedResultsController!.object(at: indexPath) as! Chat

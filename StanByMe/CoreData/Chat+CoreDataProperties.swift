@@ -2,7 +2,7 @@
 //  Chat+CoreDataProperties.swift
 //  
 //
-//  Created by Stanley Darmawan on 28/11/2016.
+//  Created by Stanley Darmawan on 2/12/2016.
 //
 //
 
@@ -16,14 +16,12 @@ extension Chat {
     }
 
     @NSManaged public var currentUserId: String?
-    @NSManaged public var imageUrl: String?
+    @NSManaged public var lastMessage: String?
     @NSManaged public var lastUpdate: String?
     @NSManaged public var partnerId: String?
     @NSManaged public var partnerNickname: String?
     @NSManaged public var read: String?
     @NSManaged public var thumbnailData: Data?
-    @NSManaged public var thumbnailUrl: String?
-    @NSManaged public var lastMessage: String?
     @NSManaged public var messages: NSSet?
 
 }

@@ -26,7 +26,6 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     var messages = [FIRDataSnapshot]()
     var currentUserData = FIRDataSnapshot()
     var partnerUserData = FIRDataSnapshot()
-    var partnerNickname: String?
 
     fileprivate var _userMessageRefHandle: FIRDatabaseHandle!
     fileprivate var _currentUserRefHandle: FIRDatabaseHandle!
@@ -53,11 +52,13 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         if chat != nil {
             let pred = NSPredicate(format: "chat == %@", chat!)
             fr.predicate = pred
+        } else {
+            let pred = NSPredicate(format: "chat == %@", 0)
+            fr.predicate = pred
         }
 
         // Create the FetchedResultsController
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
-        
         do {
             try fetchedResultsController!.performFetch()
         } catch let e as NSError {
@@ -82,6 +83,8 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func configureDatabase() {
+        
+        
         ref = FIRDatabase.database().reference()
         
         // get the userID
@@ -108,7 +111,6 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).child("messages").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
             strongSelf.messages.append(snapshot)
-//            strongSelf.myTableView.insertRows(at: [IndexPath(row: strongSelf.messages.count-1, section: 0)], with: .automatic)
             
             let message = snapshot.value as! [String: String]
             var nickname = String()
@@ -123,27 +125,12 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
                 }
             }
             
-            let chatFr = NSFetchRequest<Chat>(entityName: "Chat")
-            let chatPred = NSPredicate(format: "currentUserId == %@ && partnerId == %@", strongSelf.currentUserID, strongSelf.partnerUID)
-            chatFr.predicate = chatPred
-            
-            guard let chatsFound = try? strongSelf.stack.context.fetch(chatFr) else {
-                print("An error occurred while retrieving chats")
-                return
-            }
-            
-            if chatsFound == [] {
-                let partnerUserDict = strongSelf.partnerUserData.value as! [String: String]
-                let thumbnailData = Data()
-                let chat = Chat(currentUserId: strongSelf.currentUserID, partnerId: strongSelf.partnerUID, partnerNickname: partnerUserDict["nickname"]!, lastUpdate: "", read: "read", lastMessage: message["text"]!, thumbnailData: thumbnailData, context: strongSelf.stack.context)
+            if strongSelf.chat == nil {
+                let chat = Chat(currentUserId: strongSelf.currentUserID, partnerId: strongSelf.partnerUID, partnerNickname: nickname, lastUpdate: "", read: "read", lastMessage: message["text"]!, thumbnailData: nil, context: strongSelf.stack.context)
                 strongSelf.chat = chat
-            } else {
-                strongSelf.chat = chatsFound[0]
             }
             
-            let predicate = NSPredicate(format: "id == %@ && chat == %@", snapshot.key, strongSelf.chat!)
-            
-            
+            let predicate = NSPredicate(format: "id == %@ && chat == %@", snapshot.key, strongSelf.chat ?? 0)
             strongSelf.fr.predicate = predicate
             
             guard let messagesFound = try? strongSelf.stack.context.fetch(strongSelf.fr) else {
@@ -153,9 +140,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
             
             if messagesFound == [] {
                 let newMessage = Message(messageId: snapshot.key, status: message["status"]!, text: message["text"]!, context: strongSelf.stack.context)
-                
                 newMessage.chat = strongSelf.chat
-            
             }
             
             print("end of message closure")
@@ -178,10 +163,8 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return messages.count
         let sectionInfo = fetchedResultsController?.sections![section]
         return sectionInfo!.numberOfObjects
-
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -189,11 +172,8 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         // Coredata
         
         let message = fetchedResultsController?.object(at: indexPath)
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableViewCell", for: indexPath) as UITableViewCell
-        
         cell.textLabel?.text = message?.text
-
         return cell
 
     }
@@ -202,10 +182,8 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
 
     // UITextViewDelegate protocol methods
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-
         sendMessage(text: textField.text!)
         textField.text = ""
-        
         return true
     }
     
@@ -250,7 +228,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         partnerChatData["lastMessage"] = text
         partnerChatData["partnerNickname"] = currentUserNickname
         partnerChatData[Constants.MessageFields.ThumbnailURL] = currentUserThumbnailURL
-
+        
         // Push data to Firebase Database
         
         ref.child("user-messages").child(currentUserUID!).child(partnerUID).setValue(myChatData)
@@ -258,7 +236,13 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         
         ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("messages").childByAutoId().setValue(myData)
         ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("messages").childByAutoId().setValue(partnerData)
+
         
+        // create chat
+        if chat == nil {
+            let chat = Chat(currentUserId: currentUserUID!, partnerId: partnerUID, partnerNickname: partnerNickname, lastUpdate: now, read: "read", lastMessage: text, thumbnailData: nil, context: stack.context)
+            self.chat = chat
+        }
     
     }
     

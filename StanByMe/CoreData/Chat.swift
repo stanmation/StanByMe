@@ -2,7 +2,7 @@
 //  Chat+CoreDataClass.swift
 //  
 //
-//  Created by Stanley Darmawan on 28/11/2016.
+//  Created by Stanley Darmawan on 2/12/2016.
 //
 //
 
@@ -18,10 +18,8 @@ public class Chat: NSManagedObject {
                      lastUpdate: String,
                      read: String,
                      lastMessage: String,
-                     //                     imageUrl: String,
-        //                     thumbnailUrl: String,
-                    thumbnailData: Data?,
-        context: NSManagedObjectContext) {
+                     thumbnailData: Data?,
+                     context: NSManagedObjectContext) {
         
         // An EntityDescription is an object that has access to all
         // the information you provided in the Entity part of the model
@@ -35,8 +33,6 @@ public class Chat: NSManagedObject {
             self.partnerNickname = partnerNickname
             self.read = read
             self.lastMessage = lastMessage
-            
-            //            self.thumbnailUrl = thumbnailUrl
             self.thumbnailData = thumbnailData
         } else {
             fatalError("Unable to find Entity name!")

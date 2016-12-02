@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-import Photos
+import CoreData
 
 class SettingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIAlertViewDelegate {
     
@@ -18,6 +18,10 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     var currentUserData = FIRDataSnapshot()
     var oldPhotoRef = ""
     let currentUserUID = FIRAuth.auth()?.currentUser?.uid
+    var settings: Settings?
+    
+    let stack = (UIApplication.shared.delegate as! AppDelegate).stack
+
     
     @IBOutlet weak var profilePic: UIImageView!
     @IBOutlet weak var nicknameField: UITextField!
@@ -27,11 +31,47 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    
         
+        configureCoreData()
         configureDatabase()
         configureStorage()
 
     }
+    
+    func configureCoreData() {
+        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Settings")
+        fr.sortDescriptors = []
+        
+        // Create the FetchedResultsController
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let e as NSError {
+            print("Error while trying to perform a search: \n\(e)\n\(fetchedResultsController)")
+        }
+        
+        guard let settingsFound = try? stack.context.fetch(fr) as! [Settings] else {
+            print("An error occurred while retrieving settings")
+            return
+        }
+        
+        if settingsFound != [] {
+            settings = settingsFound[0]
+        }
+        
+        if let settings = self.settings {
+            nicknameField.text = settings.nickname
+            aboutMeField.text = settings.aboutMe
+            lookingForField.text = settings.lookingFor
+            profilePic.image = UIImage(data: settings.profilePic!)
+        } else {
+            self.settings = Settings(profilePic: nil, aboutYou: "", lookingFor: "", nickname: "", context: stack.context)
+        }
+    }
+
     
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
@@ -44,10 +84,7 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         })
     }
     
-    func configureStorage() {
-        storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
-    }
-    
+
     func prefillData() {
         nicknameField.text = (currentUserData.childSnapshot(forPath: Constants.Users.Nickname).value as? String) ?? ""
         aboutMeField.text = (currentUserData.childSnapshot(forPath: Constants.Users.AboutMe).value as? String) ?? ""
@@ -59,11 +96,23 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
                     return
                 }
                 self.profilePic.image = UIImage.init(data: data!)
+                self.settings?.profilePic = data
+
             }
         } else {
             print("imageURL not available")
             self.profilePic.image = UIImage(named: "NoImage")
         }
+        
+        self.settings?.nickname = nicknameField.text
+        self.settings?.aboutMe = aboutMeField.text
+        self.settings?.lookingFor = lookingForField.text
+
+        
+    }
+    
+    func configureStorage() {
+        storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
     }
     
     @IBAction func profilePicTapped(_ sender: AnyObject) {
