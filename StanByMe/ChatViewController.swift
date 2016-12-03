@@ -16,19 +16,22 @@ class ChatViewController: CoreDataTableViewController {
     fileprivate var _refHandle: FIRDatabaseHandle!
     var userMessages = [FIRDataSnapshot]()
     var partnerUID: String?
-    
     let stack = (UIApplication.shared.delegate as! AppDelegate).stack
+    let currentUserID = FIRAuth.auth()?.currentUser?.uid
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         // Create a fetchrequest
         let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Chat")
         fr.sortDescriptors = [NSSortDescriptor(key: "lastUpdate", ascending: false)]
+        let pred = NSPredicate(format: "currentUserId == %@", currentUserID!)
+        fr.predicate = pred
         
         // Create the FetchedResultsController
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
-        
         configureDatabase()
     }
 
@@ -49,8 +52,6 @@ class ChatViewController: CoreDataTableViewController {
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
         
-        // get the userID
-        let currentUserID = FIRAuth.auth()?.currentUser?.uid
 
         _refHandle = self.ref.child("user-messages").child(currentUserID!).queryOrdered(byChild: "lastUpdate").observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
@@ -59,12 +60,12 @@ class ChatViewController: CoreDataTableViewController {
                 
                 let fr = NSFetchRequest<Chat>(entityName: "Chat")
                 for snap in snapshots {
-                    let partnerNickname = snap.childSnapshot(forPath: "partnerNickname").value as! String
+                    let partnerNickname = snap.childSnapshot(forPath: "info/partnerNickname").value as! String
                     let partnerId = snap.key
                     strongSelf.partnerUID = partnerId
-                    let lastUpdate = snap.childSnapshot(forPath: "lastUpdate").value as! String
-                    let read = snap.childSnapshot(forPath: "read").value as! String
-                    let lastMessage = snap.childSnapshot(forPath: "lastMessage").value as! String
+                    let lastUpdate = snap.childSnapshot(forPath: "info/lastUpdate").value as! String
+                    let read = snap.childSnapshot(forPath: "info/read").value as! String
+                    let lastMessage = snap.childSnapshot(forPath: "info/lastMessage").value as! String
                     let predicate = NSPredicate(format: "partnerId == %@", partnerId)
                     fr.predicate = predicate
                     guard let chatsFound = try? strongSelf.stack.context.fetch(fr) else {
@@ -82,10 +83,10 @@ class ChatViewController: CoreDataTableViewController {
                             chat?.lastMessage = lastMessage
                         } else {
                             print("chat doesn't exist")
-                            chat = Chat(currentUserId: currentUserID!, partnerId: partnerId, partnerNickname: partnerNickname, lastUpdate: lastUpdate, read: read, lastMessage: lastMessage, thumbnailData: nil, context: workerContext)
+                            chat = Chat(currentUserId: strongSelf.currentUserID!, partnerId: partnerId, partnerNickname: partnerNickname, lastUpdate: lastUpdate, read: read, lastMessage: lastMessage, thumbnailData: nil, context: workerContext)
                         }
                         
-                        if let thumbnailURL = snap.childSnapshot(forPath: Constants.MessageFields.ThumbnailURL).value as? String, thumbnailURL.hasPrefix("gs://") {
+                        if let thumbnailURL = snap.childSnapshot(forPath: "info/thumbnailURL").value as? String, thumbnailURL.hasPrefix("gs://") {
                             FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
                                 if let error = error {
                                     print("Error downloading: \(error)")
@@ -102,28 +103,10 @@ class ChatViewController: CoreDataTableViewController {
         })
   
     }
+    
 
-    // this will download the image from Firebase storage
-//    func getImage( imagePath:String, completionHandler: @escaping (_ imageData: Data?, _ errorString: String?) -> Void){
-//        let session = URLSession.shared
-//        let imgURL = URL(string: imagePath)
-//        let request: URLRequest = URLRequest(url: imgURL!)
-//        
-//        let task = session.dataTask(with: request) {data, response, downloadError in
-//            
-//            if let error = downloadError {
-//                completionHandler(nil, "Could not download image \(imagePath)")
-//            } else {
-//                
-//                completionHandler(data, nil)
-//            }
-//        }
-//        
-//        task.resume()
-//    }
-    
+
     //MARK: Delegate Methods
-    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -148,6 +131,8 @@ class ChatViewController: CoreDataTableViewController {
         performSegue(withIdentifier: Constants.Segues.ToMessageVC, sender: nil)
         tableView.deselectRow(at: indexPath, animated: false)
     }
+    
+    
 
 
 }

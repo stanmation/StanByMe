@@ -27,9 +27,20 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     @IBOutlet weak var myCollectionView: UICollectionView!
     @IBOutlet weak var flowlayout: UICollectionViewFlowLayout!
 
-
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
+        
+        return refreshControl
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        locationManager.startUpdatingLocation()
+        
+        myCollectionView.addSubview(refreshControl)
         
         let currentUserEmail = FIRAuth.auth()?.currentUser?.email
         navigationItem.title = currentUserEmail
@@ -50,17 +61,14 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         flowlayout.minimumInteritemSpacing = space
         flowlayout.minimumLineSpacing = space
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
+        
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
+
+    // this function will be called when refresh the page by dragging
+    func handleRefresh(_ refreshControl: UIRefreshControl) {
+        // Do some refresh
         locationManager.startUpdatingLocation()
-        
-//        let when = DispatchTime.now() + 3 // change 2 to desired number of seconds
-//        DispatchQueue.main.asyncAfter(deadline: when) {
-//            print("Users: \(self.users)")
-//        }
+        refreshControl.endRefreshing()
     }
     
     

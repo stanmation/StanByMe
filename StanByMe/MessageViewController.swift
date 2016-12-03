@@ -109,6 +109,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func getMessagesSnapshot() {
         _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).child("messages").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
+            
             guard let strongSelf = self else { return }
             strongSelf.messages.append(snapshot)
             
@@ -227,12 +228,16 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         partnerChatData["lastUpdate"] = now
         partnerChatData["lastMessage"] = text
         partnerChatData["partnerNickname"] = currentUserNickname
+        partnerChatData["read"] = "unread"
         partnerChatData[Constants.MessageFields.ThumbnailURL] = currentUserThumbnailURL
         
         // Push data to Firebase Database
         
-        ref.child("user-messages").child(currentUserUID!).child(partnerUID).setValue(myChatData)
-        ref.child("user-messages").child(partnerUID).child(currentUserUID!).setValue(partnerChatData)
+        ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("info").setValue(myChatData)
+        ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("info").setValue(partnerChatData)
+        
+        ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("lastUpdate").setValue(now)
+        ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("lastUpdate").setValue(now)
         
         ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("messages").childByAutoId().setValue(myData)
         ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("messages").childByAutoId().setValue(partnerData)
