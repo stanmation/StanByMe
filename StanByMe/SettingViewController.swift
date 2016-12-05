@@ -32,11 +32,16 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        
         configureCoreData()
         configureDatabase()
         configureStorage()
 
+    }
+    
+    deinit {
+        if _refHandle != nil {
+            self.ref.child("users").removeObserver(withHandle: _refHandle)
+        }
     }
     
     func configureCoreData() {

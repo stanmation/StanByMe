@@ -31,7 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            print("can't drop the data")
 //        }
 
-        
         FIRApp.configure()
         
         return true

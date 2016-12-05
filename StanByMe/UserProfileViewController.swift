@@ -51,13 +51,11 @@ class UserProfileViewController: UIViewController {
             print("Error while trying to perform a search: \n\(e)\n\(fetchedResultsController)")
         }
         
-        
         getDataFromDB()
         fetchUserInfo()
         
         title = user["nickname"]
     }
-    
     
     func getDataFromDB() {
         if let imageURL = user[Constants.Users.ImageURL] {

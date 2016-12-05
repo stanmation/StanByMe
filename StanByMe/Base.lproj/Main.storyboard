@@ -148,10 +148,10 @@ Girl</string>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="o05-lK-qjc" firstAttribute="top" secondItem="G23-8V-ldM" secondAttribute="bottom" id="7OB-hG-0Kx"/>
-                            <constraint firstAttribute="trailing" secondItem="o05-lK-qjc" secondAttribute="trailing" id="JzO-i6-lcA"/>
-                            <constraint firstItem="o05-lK-qjc" firstAttribute="leading" secondItem="G2S-tc-Ek7" secondAttribute="leading" id="QyG-Bd-WgX"/>
-                            <constraint firstItem="uB1-Q9-s4f" firstAttribute="top" secondItem="o05-lK-qjc" secondAttribute="bottom" id="Sj3-eA-13u"/>
+                            <constraint firstAttribute="trailing" secondItem="o05-lK-qjc" secondAttribute="trailing" id="DlH-cr-34y"/>
+                            <constraint firstItem="o05-lK-qjc" firstAttribute="leading" secondItem="G2S-tc-Ek7" secondAttribute="leading" id="KEp-aZ-vqU"/>
+                            <constraint firstItem="o05-lK-qjc" firstAttribute="bottom" secondItem="G2S-tc-Ek7" secondAttribute="bottomMargin" id="OU4-8W-ZsY"/>
+                            <constraint firstItem="o05-lK-qjc" firstAttribute="top" secondItem="G23-8V-ldM" secondAttribute="bottom" id="epc-tU-WfT"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -196,8 +196,8 @@ Girl</string>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nMG-RH-RFc">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tableViewCell" id="Aeu-hf-KwZ">
-                                        <rect key="frame" x="0.0" y="92" width="1000" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tableViewCell" id="Aeu-hf-KwZ" customClass="MessageTableViewCell" customModule="StanByMe" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="92" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Aeu-hf-KwZ" id="eAK-xE-oEG">
                                             <frame key="frameInset" width="375" height="44"/>
@@ -467,7 +467,9 @@ Girl</string>
                             <outlet property="delegate" destination="hPQ-S9-IfX" id="PdH-qw-NQN"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="8XP-I6-Vfp"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="pmb-MU-E6h" kind="show" identifier="toMessageSeque" id="1FJ-pX-65C"/>
                     </connections>
@@ -684,6 +686,12 @@ Girl</string>
                                     <outlet property="delegate" destination="Vdj-HI-egO" id="v1z-MW-Y5F"/>
                                 </connections>
                             </collectionView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Set your keywords in Settings to see the users with the matching keywords" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="7Uj-Nc-YX7">
+                                <frame key="frameInset" minX="67" minY="269" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -707,6 +715,7 @@ Girl</string>
                     <connections>
                         <outlet property="flowlayout" destination="XL3-1P-Ush" id="fv9-T9-9XF"/>
                         <outlet property="myCollectionView" destination="IEj-8e-KUO" id="FrN-ji-Pgb"/>
+                        <outlet property="warningMsgTextView" destination="7Uj-Nc-YX7" id="RHc-gT-Gp3"/>
                         <segue destination="2Yh-7g-hM8" kind="show" identifier="toProfileSeque" id="e9g-aC-cjG"/>
                     </connections>
                 </viewController>

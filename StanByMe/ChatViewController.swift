@@ -19,11 +19,11 @@ class ChatViewController: CoreDataTableViewController {
     let stack = (UIApplication.shared.delegate as! AppDelegate).stack
     let currentUserID = FIRAuth.auth()?.currentUser?.uid
 
+    @IBOutlet weak var editButton: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
+
         // Create a fetchrequest
         let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Chat")
         fr.sortDescriptors = [NSSortDescriptor(key: "lastUpdate", ascending: false)]
@@ -34,6 +34,12 @@ class ChatViewController: CoreDataTableViewController {
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
         configureDatabase()
     }
+    
+    deinit {
+        if _refHandle != nil {
+            self.ref.child("user-messages").removeObserver(withHandle: _refHandle)
+        }
+    }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is MessageViewController {
@@ -42,12 +48,19 @@ class ChatViewController: CoreDataTableViewController {
             
             let indexPath = tableView.indexPathForSelectedRow!
             let chat = fetchedResultsController?.object(at: indexPath) as? Chat
+            chat?.read = "read"
             
             controller.partnerUID = chat?.partnerId
             controller.chat = chat
             
+            ref.child("user-messages").child(currentUserID!).child((chat?.partnerId!)!).child("info").child("read").setValue("read")
+
+            
+            controller.hidesBottomBarWhenPushed = true
+            
         }
     }
+    
     
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
@@ -103,8 +116,6 @@ class ChatViewController: CoreDataTableViewController {
         })
   
     }
-    
-
 
     //MARK: Delegate Methods
     
@@ -113,6 +124,12 @@ class ChatViewController: CoreDataTableViewController {
         // Find the right chat for this indexpath
         let chat = fetchedResultsController!.object(at: indexPath) as! Chat
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "tableViewCell") as! ChatTableViewCell!
+        
+        if chat.read == "unread" {
+            cell?.backgroundColor = UIColor.red
+        } else {
+            cell?.backgroundColor = UIColor.clear
+        }
         
         if let thumbnailData = chat.thumbnailData {
             cell?.profileImageView?.image = UIImage(data: thumbnailData)
@@ -132,6 +149,32 @@ class ChatViewController: CoreDataTableViewController {
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if let context = fetchedResultsController?.managedObjectContext, let chat = fetchedResultsController?.object(at: indexPath) as? Chat, editingStyle == .delete {
+            
+            let fr = NSFetchRequest<Message>(entityName: "Message")
+            fr.sortDescriptors = [NSSortDescriptor(key: "dateUpdated", ascending: true)]
+            
+            let predicate = NSPredicate(format: "chat == %@", chat)
+            fr.predicate = predicate
+            
+            guard let messagesFound = try? context.fetch(fr) else {
+                print("An error occurred while retrieving messages")
+                return
+            }
+            
+            ref.child("user-messages").child(currentUserID!).child(chat.partnerId!).removeValue()
+            ref.child("user-messages").child(chat.partnerId!).child(currentUserID!).removeValue()
+
+            context.delete(chat)
+            
+            for message in messagesFound {
+                context.delete(message)
+            }
+            
+
+        }
+    }
     
 
 

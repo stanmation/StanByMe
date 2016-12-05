@@ -24,6 +24,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     let locationManager = CLLocationManager()
     var currentUserLocation = CLLocation()
     
+    @IBOutlet weak var warningMsgTextView: UITextView!
     @IBOutlet weak var myCollectionView: UICollectionView!
     @IBOutlet weak var flowlayout: UICollectionViewFlowLayout!
 
@@ -61,6 +62,10 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         flowlayout.minimumInteritemSpacing = space
         flowlayout.minimumLineSpacing = space
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
     }
 
@@ -85,7 +90,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             let distanceInMeter = userLocation!.distance(from: currentUserLocation)
             let distanceInKilometer = distanceInMeter / 1000
             controller.distance = distanceInKilometer
-
+            
+            controller.hidesBottomBarWhenPushed = true
         }
     }
     
@@ -152,6 +158,15 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     // MARK: Delegate methods
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        if users!.count == 0 {
+            UIView.animate(withDuration: 1, animations: {
+                self.warningMsgTextView.alpha = 1
+            })
+        } else {
+            warningMsgTextView.alpha = 0
+        }
+        
         return users!.count
     }
     

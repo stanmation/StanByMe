@@ -26,6 +26,8 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     var messages = [FIRDataSnapshot]()
     var currentUserData = FIRDataSnapshot()
     var partnerUserData = FIRDataSnapshot()
+    
+    let cellIdentifier = "tableViewCell"
 
     fileprivate var _userMessageRefHandle: FIRDatabaseHandle!
     fileprivate var _currentUserRefHandle: FIRDatabaseHandle!
@@ -43,20 +45,68 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        myTableView.register(MessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        myTableView.estimatedRowHeight = 44
+        
+        // get the userID
+        currentUserID = FIRAuth.auth()?.currentUser?.uid
+        
         executeSearch()
+        
+        configureCoreData()
+        
+        configureDatabase()
+        configureStorage()
+        
+        // add gesture recognizer when view is tapped, in this case it will hide the keyboard
+        let tap = UITapGestureRecognizer(target: self, action: #selector(viewIsTapped))
+        view.addGestureRecognizer(tap)
+    }
     
+    deinit {
+        if _userMessageRefHandle != nil {
+            self.ref.child("user-messages").removeObserver(withHandle: _userMessageRefHandle)
+        }
+        if _currentUserRefHandle != nil {
+            self.ref.child("users").removeObserver(withHandle: _currentUserRefHandle)
+        }
+        if _partnerUserRefHandle != nil {
+            self.ref.child("users").removeObserver(withHandle: _partnerUserRefHandle)
+        }
+    }
+    
+    // method called when view is tapped
+    func viewIsTapped() {
+        newMessageTextField.resignFirstResponder()
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        subscribeToKeyboardNotifications()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        unsubscribeToKeyboardNotifications()
+    }
+    
+    func configureCoreData() {
+        
         // Create a fetchrequest
         fr = NSFetchRequest<Message>(entityName: "Message")
         fr.sortDescriptors = [NSSortDescriptor(key: "dateUpdated", ascending: true)]
         
         if chat != nil {
-            let pred = NSPredicate(format: "chat == %@", chat!)
-            fr.predicate = pred
+            let predicate = NSPredicate(format: "chat == %@", chat!)
+            fr.predicate = predicate
         } else {
             let pred = NSPredicate(format: "chat == %@", 0)
             fr.predicate = pred
         }
-
+        
         // Create the FetchedResultsController
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
         do {
@@ -66,29 +116,11 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         }
         
         fetchedResultsController?.delegate = self
-        
-        configureDatabase()
-        configureStorage()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        navigationController?.popToRootViewController(animated: false)
-    }
-    
-    deinit {
-        self.ref.child("user-messages").removeObserver(withHandle: _userMessageRefHandle)
-        self.ref.child("users").removeObserver(withHandle: _currentUserRefHandle)
-        self.ref.child("users").removeObserver(withHandle: _partnerUserRefHandle)
     }
     
     func configureDatabase() {
         
-        
         ref = FIRDatabase.database().reference()
-        
-        // get the userID
-        currentUserID = FIRAuth.auth()?.currentUser?.uid
         
         // get user snapshot
         _currentUserRefHandle = ref.child("users").child(currentUserID!).observe(.value, with: { [weak self] (snapshot) -> Void in
@@ -127,7 +159,14 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
             }
             
             if strongSelf.chat == nil {
-                let chat = Chat(currentUserId: strongSelf.currentUserID, partnerId: strongSelf.partnerUID, partnerNickname: nickname, lastUpdate: "", read: "read", lastMessage: message["text"]!, thumbnailData: nil, context: strongSelf.stack.context)
+                
+                // setup the date
+                let dateformatter = DateFormatter()
+                dateformatter.dateFormat = "MM/dd/yy h:mm a Z"
+                let now = dateformatter.string(from: Date())
+                
+                // create chat
+                let chat = Chat(currentUserId: strongSelf.currentUserID, partnerId: strongSelf.partnerUID, partnerNickname: nickname, lastUpdate: now, read: "read", lastMessage: message["text"]!, thumbnailData: nil, context: strongSelf.stack.context)
                 strongSelf.chat = chat
             }
             
@@ -158,10 +197,43 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         textFieldShouldReturn(newMessageTextField)
     }
     
+    // MARK: Keyboard manipulation
+    
+    func keyboardWillShow(notification:NSNotification) {
+        
+        if (newMessageTextField.isFirstResponder){
+            self.view.frame.origin.y = getKeyboardHeight(notification: notification) * (-1)
+            self.navigationController!.navigationBar.frame.origin.y = getKeyboardHeight(notification: notification) * (-1)
+        }
+    }
+    
+    func keyboardWillHide(notification:NSNotification) {
+        self.view.frame.origin.y = 0
+        self.navigationController!.navigationBar.frame.origin.y = 0
+    }
+    
+    func getKeyboardHeight(notification:NSNotification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
+        return keyboardSize.cgRectValue.height
+    }
+    
+    func subscribeToKeyboardNotifications(){
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    func unsubscribeToKeyboardNotifications(){
+        NotificationCenter.default.removeObserver(self, name:  NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name:  NSNotification.Name.UIKeyboardWillHide, object:nil)
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return fetchedResultsController?.sections?.count ?? 0
 
     }
+    
+    // MARK: Delegate method
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController?.sections![section]
@@ -173,18 +245,25 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         // Coredata
         
         let message = fetchedResultsController?.object(at: indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: "tableViewCell", for: indexPath) as UITableViewCell
-        cell.textLabel?.text = message?.text
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! MessageTableViewCell
+
+        if message?.status == "sender" {
+            cell.incoming(incoming: false)
+        } else {
+            cell.incoming(incoming: true)
+        }
+        cell.messageLabel.text = message?.text
         return cell
 
     }
-
     
 
-    // UITextViewDelegate protocol methods
+    // MARK: UITextViewDelegate protocol methods
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         sendMessage(text: textField.text!)
         textField.text = ""
+        newMessageTextField.resignFirstResponder()
+        
         return true
     }
     
@@ -241,7 +320,6 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         
         ref.child("user-messages").child(currentUserUID!).child(partnerUID).child("messages").childByAutoId().setValue(myData)
         ref.child("user-messages").child(partnerUID).child(currentUserUID!).child("messages").childByAutoId().setValue(partnerData)
-
         
         // create chat
         if chat == nil {
