@@ -12,7 +12,7 @@ import Firebase
 class UsersCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate {
     
     var ref: FIRDatabaseReference!
-    var users:[FIRDataSnapshot]?
+    var users:[[String: String]]?
     var closestUsers = [String: CLLocation]()
     
     fileprivate var _refHandle: FIRDatabaseHandle!
@@ -49,7 +49,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         configureStorage()
 
         ref = FIRDatabase.database().reference()
-        users = [FIRDataSnapshot]()
+        users = [[String: String]]()
         
         // configure location manager
         locationManager.delegate = self
@@ -64,10 +64,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-    }
 
     // this function will be called when refresh the page by dragging
     func handleRefresh(_ refreshControl: UIRefreshControl) {
@@ -82,7 +78,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             
             let controller = segue.destination as! UserProfileViewController
             let indexPath = myCollectionView.indexPathsForSelectedItems?[0]
-            let user = users?[(indexPath?.row)!].value as! [String: String]
+            let user = (users?[(indexPath?.row)!])! as [String: String]
             controller.user = user
             
             // finding the distance of the selected user
@@ -121,7 +117,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         let circleQuery = geoFire?.query(at: currentUserLocation, withRadius: 1000)
         
         var tempClosestUsers = [String: CLLocation]()
-        var tempUsers = [FIRDataSnapshot]()
+        var tempUsers = [[String: String]]()
         
         // observe for the closest users within the database
         circleQuery?.observe(.keyEntered, with: { [weak self] (key, location) in
@@ -133,12 +129,17 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                 let yourAboutMeSentence = snapshot.childSnapshot(forPath: "aboutMe").value as! String
                 let yourAboutMeArray = strongSelf.breakingSentenceIntoKeywords(sentence: yourAboutMeSentence)
                 
+                var counter = 0
                 for keyword in myLookingForArray {
                     if yourAboutMeArray.contains(keyword) {
-                        if !tempUsers.contains(snapshot) {
-                            tempUsers.append(snapshot)
-                        }
+                        counter += 1
                     }
+                }
+                
+                if counter > 0 {
+                    var user = snapshot.value as! [String: String]
+                    user["noMatch"] = String(counter)
+                    tempUsers.append(user)
                 }
                 
                 strongSelf.users = tempUsers
@@ -147,6 +148,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             }) { (error) in
                 print(error.localizedDescription)
             }
+
         })
         
     }
@@ -175,17 +177,17 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath) as! UsersCollectionViewCell
         
         // Unpack users from Firebase DataSnapshot
-        let userSnapshot: FIRDataSnapshot! = users![indexPath.row]
-        let user = userSnapshot.value as! Dictionary<String, String>
+        let user: [String: String] = users![indexPath.row]
         
         let nickname = user[Constants.Users.Nickname] as String!
         
-        let userLocation = closestUsers[userSnapshot.key]
+        let userLocation = closestUsers[user["uid"]!]
         let distanceInMeter = userLocation!.distance(from: currentUserLocation)
         let distanceInKilometer = distanceInMeter / 1000
         
         cell.textLabel?.text = nickname
         cell.detailTextLabel?.text = String(distanceInKilometer) + " km"
+        cell.keywordMatchTextField.text = user["noMatch"]! + " matches"
         
         if let thumbnailURL = user[Constants.Users.ThumbnailURL], thumbnailURL.hasPrefix("gs://") {
             FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in

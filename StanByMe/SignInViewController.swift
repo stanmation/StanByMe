@@ -18,7 +18,7 @@ import UIKit
 import Firebase
 
 @objc(SignInViewController)
-class SignInViewController: UIViewController {
+class SignInViewController: UIViewController, UIAlertViewDelegate {
 
   @IBOutlet weak var emailField: UITextField!
   @IBOutlet weak var passwordField: UITextField!
@@ -34,6 +34,13 @@ class SignInViewController: UIViewController {
     FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
         if let error = error {
             print(error.localizedDescription)
+            
+            if self.passwordField.text == "" {
+                self.displayAlert(alertType: "badCredentials", message: "Please fill in your password")
+            } else {
+                self.displayAlert(alertType: "badCredentials", message: error.localizedDescription)
+            }
+            
             return
         }
         self.signedIn(user!)
@@ -83,17 +90,29 @@ class SignInViewController: UIViewController {
     present(prompt, animated: true, completion: nil)
   }
 
-  func signedIn(_ user: FIRUser?) {
-//    MeasurementHelper.sendLoginEvent()
-    
-    print("signedIn")
+    func signedIn(_ user: FIRUser?) {
+    //    MeasurementHelper.sendLoginEvent()
+        
+        print("signedIn")
 
-    AppState.sharedInstance.displayName = user?.displayName ?? user?.email
-    AppState.sharedInstance.photoURL = user?.photoURL
-    AppState.sharedInstance.signedIn = true
-    let notificationName = Notification.Name(rawValue: Constants.NotificationKeys.SignedIn)
-    NotificationCenter.default.post(name: notificationName, object: nil, userInfo: nil)
-    performSegue(withIdentifier: Constants.Segues.SignInToApp, sender: nil)
-  }
+        AppState.sharedInstance.displayName = user?.displayName ?? user?.email
+        AppState.sharedInstance.photoURL = user?.photoURL
+        AppState.sharedInstance.signedIn = true
+        let notificationName = Notification.Name(rawValue: Constants.NotificationKeys.SignedIn)
+        NotificationCenter.default.post(name: notificationName, object: nil, userInfo: nil)
+        performSegue(withIdentifier: Constants.Segues.SignInToApp, sender: nil)
+    }
+    
+    func displayAlert(alertType: String, message: String) {
+        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        if alertType == "badCredentials" {
+            alert.title = "Error"
+            alert.message = message
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        }
+        present(alert, animated: true, completion: nil)
+    }
 
 }
+
+

@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: UIViewController, UIAlertViewDelegate {
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -22,20 +22,25 @@ class SignUpViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-
 
     }
 
     @IBAction func signUpTapped(_ sender: AnyObject) {
-        guard let email = emailField.text, let password = passwordField.text else {return}
-        FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            self.signedIn(FIRAuth.auth()?.currentUser)
-        })
+        if ((emailField.text == "") || (passwordField.text == "") || (nicknameField.text == "") || (aboutMeField.text == "") || (lookingForField.text) == "") {
+            displayAlert(alertType: "emptyField", message: "Please fill in all the fields")
+        } else {
+            guard let email = emailField.text, let password = passwordField.text else {return}
+            FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    self.displayAlert(alertType: "badCredentials", message: error.localizedDescription)
+                    return
+                } else {
+                    print(user)
+                }
+                self.signedIn(FIRAuth.auth()?.currentUser)
+            })
+        }
         
     }
     
@@ -55,7 +60,7 @@ class SignUpViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func pushUserDataToDB () {
+    func pushUserDataToDB() {
         ref = FIRDatabase.database().reference()
         
         // get the userID
@@ -68,6 +73,20 @@ class SignUpViewController: UIViewController {
         currentUserData[Constants.Users.AboutMe] = aboutMeField.text
         
         ref.child("users").child(currentUserID!).setValue(currentUserData)
+    }
+    
+    func displayAlert(alertType: String, message: String) {
+        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+        if alertType == "emptyField" {
+            alert.title = "Error"
+            alert.message = message
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        } else if alertType == "badCredentials" {
+            alert.title = "Error"
+            alert.message = message
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        }
+        present(alert, animated: true, completion: nil)
     }
 
 }
