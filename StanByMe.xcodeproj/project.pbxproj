@@ -184,6 +184,7 @@
 		1DC9AB6C1DE8E882000EFA3A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1DC1656C1DF1953D00E357F6 /* Settings.swift */,
 				1DC1656D1DF1953D00E357F6 /* Settings+CoreDataProperties.swift */,
 				1DC1655C1DF1852F00E357F6 /* Chat.swift */,
 				1DC1655D1DF1852F00E357F6 /* Chat+CoreDataProperties.swift */,
@@ -199,7 +200,6 @@
 			isa = PBXGroup;
 			children = (
 				1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */,
-				1DC1656C1DF1953D00E357F6 /* Settings.swift */,
 				1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */,
 				1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */,
 				1DBF38691DD0822D00E5406A /* SignUpViewController.swift */,

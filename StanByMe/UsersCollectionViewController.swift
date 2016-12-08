@@ -42,10 +42,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         locationManager.startUpdatingLocation()
         
         myCollectionView.addSubview(refreshControl)
-        
-        let currentUserEmail = FIRAuth.auth()?.currentUser?.email
-        navigationItem.title = currentUserEmail
-        
+                
         configureStorage()
 
         ref = FIRDatabase.database().reference()
@@ -57,7 +54,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         locationManager.stopUpdatingLocation()
         
         // setup CollectionView flow layout
-        let space: CGFloat = 5.0
+        let space: CGFloat = 0.0
         let dimension = (self.view.frame.size.width - (2 * space)) / 3.0
         flowlayout.minimumInteritemSpacing = space
         flowlayout.minimumLineSpacing = space
@@ -84,7 +81,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             // finding the distance of the selected user
             let userLocation = closestUsers[user["uid"]!]
             let distanceInMeter = userLocation!.distance(from: currentUserLocation)
-            let distanceInKilometer = distanceInMeter / 1000
+            let distanceInKilometer = round(distanceInMeter) / 1000
             controller.distance = distanceInKilometer
             
             controller.hidesBottomBarWhenPushed = true
@@ -136,6 +133,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                     }
                 }
                 
+                // if the no of keyword matches are more than 0, we include that users into the list
                 if counter > 0 {
                     var user = snapshot.value as! [String: String]
                     user["noMatch"] = String(counter)
@@ -179,27 +177,30 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         // Unpack users from Firebase DataSnapshot
         let user: [String: String] = users![indexPath.row]
         
-        let nickname = user[Constants.Users.Nickname] as String!
+        // still deciding if nickname will be displayed on the users list
+//        let nickname = user["nickname"] as String!
         
         let userLocation = closestUsers[user["uid"]!]
         let distanceInMeter = userLocation!.distance(from: currentUserLocation)
-        let distanceInKilometer = distanceInMeter / 1000
+        let distanceInKilometer = round(distanceInMeter) / 1000
         
-        cell.textLabel?.text = nickname
+//        cell.textLabel?.text = nickname
         cell.detailTextLabel?.text = String(distanceInKilometer) + " km"
         cell.keywordMatchTextField.text = user["noMatch"]! + " matches"
         
-        if let thumbnailURL = user[Constants.Users.ThumbnailURL], thumbnailURL.hasPrefix("gs://") {
+        if let thumbnailURL = user["thumbnailURL"], thumbnailURL.hasPrefix("gs://") {
             FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
                     return
                 }
+                cell.downloadProgressIndicator.stopAnimating()
                 cell.imageView?.image = UIImage(data: data!)
             }
         } else {
             cell.imageView?.image = UIImage(named: "NoImage")
-            if let photoURL = user[Constants.Users.ImageURL], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
+            if let photoURL = user["imageURL"], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
+                cell.downloadProgressIndicator.stopAnimating()
                 cell.imageView?.image = UIImage(data: data)
             }
         }
@@ -219,22 +220,4 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         configureDatabase()
     }
     
-    
-    // TEMP
-    
-    func getImageName() {
-        let myIndexPaths = myCollectionView.indexPathsForVisibleItems
-        for myIndexPath in myIndexPaths {
-            let cell = myCollectionView.cellForItem(at: myIndexPath) as! UsersCollectionViewCell
-            print("Image for \(myIndexPath): \(cell.imageView.image)")
-            
-            
-        }
-    }
-    
-    @IBAction func testButtonTapped(_ sender: AnyObject) {
-        getImageName()
-    }
-    
-
 }

@@ -16,7 +16,6 @@ class UserProfileViewController: UIViewController {
     var user: [String: String]!
     var distance: Double!
     
-    @IBOutlet weak var nicknameLabel: UILabel!
     @IBOutlet weak var distanceTextField: UITextField!
     @IBOutlet weak var aboutMeTextView: UITextView!
     @IBOutlet weak var lookingForTextView: UITextView!
@@ -55,10 +54,11 @@ class UserProfileViewController: UIViewController {
         fetchUserInfo()
         
         title = user["nickname"]
+        
     }
     
     func getDataFromDB() {
-        if let imageURL = user[Constants.Users.ImageURL] {
+        if let imageURL = user["imageURL"] {
             if imageURL.hasPrefix("gs://") {
                 FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
                     if let error = error {
@@ -72,8 +72,8 @@ class UserProfileViewController: UIViewController {
                 self.profilePicImageView.image = UIImage.init(data: data)
             }
         } else {
-            self.profilePicImageView.image  = UIImage(named: "NoImage")
-            if let photoURL = user[Constants.Users.ImageURL], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
+            self.profilePicImageView.image  = UIImage(named: "NoImage_Large")
+            if let photoURL = user["imageURL"], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
                 self.profilePicImageView.image  = UIImage(data: data)
             }
         }
@@ -81,21 +81,20 @@ class UserProfileViewController: UIViewController {
     }
     
     func fetchUserInfo() {
-        nicknameLabel.text = user["nickname"]
         
         let aboutMeArray = breakingSentenceIntoKeywords(sentence: user["aboutMe"]!)
         aboutMeTextView.text = "About Me:"
         for aboutMe in aboutMeArray {
-            aboutMeTextView.text.append("\n\(aboutMe)")
+            aboutMeTextView.text.append("\n- \(aboutMe)")
         }
         
         let lookingForArray = breakingSentenceIntoKeywords(sentence: user["lookingFor"]!)
         lookingForTextView.text = "Looking For:"
         for lookingFor in lookingForArray {
-            lookingForTextView.text.append("\n\(lookingFor)")
+            lookingForTextView.text.append("\n- \(lookingFor)")
         }
         
-        distanceTextField.text = String(distance) + " km"
+        distanceTextField.text = String(distance) + " km away"
 
     }
     

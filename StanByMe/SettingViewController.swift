@@ -91,10 +91,10 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
 
     func prefillData() {
-        nicknameField.text = (currentUserData.childSnapshot(forPath: Constants.Users.Nickname).value as? String) ?? ""
-        aboutMeField.text = (currentUserData.childSnapshot(forPath: Constants.Users.AboutMe).value as? String) ?? ""
-        lookingForField.text = (currentUserData.childSnapshot(forPath: Constants.Users.LookingFor).value as? String) ?? ""
-        if let thumbnailURL = currentUserData.childSnapshot(forPath: Constants.Users.ThumbnailURL).value as? String, thumbnailURL.hasPrefix("gs://") {
+        nicknameField.text = (currentUserData.childSnapshot(forPath: "nickname").value as? String) ?? ""
+        aboutMeField.text = (currentUserData.childSnapshot(forPath: "aboutMe").value as? String) ?? ""
+        lookingForField.text = (currentUserData.childSnapshot(forPath: "lookingFor").value as? String) ?? ""
+        if let thumbnailURL = currentUserData.childSnapshot(forPath: "thumbnailURL").value as? String, thumbnailURL.hasPrefix("gs://") {
             FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
                 if let error = error {
                     print("Error downloading: \(error)")
@@ -139,9 +139,9 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     @IBAction func saveButtonPressed(_ sender: AnyObject) {
         let path = ref.child("users").child(currentUserUID!)
-        path.child(Constants.Users.Nickname).setValue(nicknameField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
-        path.child(Constants.Users.AboutMe).setValue(aboutMeField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
-        path.child(Constants.Users.LookingFor).setValue(lookingForField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+        path.child("nickname").setValue(nicknameField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+        path.child("aboutMe").setValue(aboutMeField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+        path.child("lookingFor").setValue(lookingForField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
     }
     
     
@@ -158,12 +158,12 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func setImageURL(withData data: String) {
         // Push data to Firebase Database
-        self.ref.child("users").child(currentUserUID!).child(Constants.Users.ImageURL).setValue(data)
+        self.ref.child("users").child(currentUserUID!).child("imageURL").setValue(data)
     }
     
     func setThumbnailURL(withData data: String) {
         // Push data to Firebase Database
-        self.ref.child("users").child(currentUserUID!).child(Constants.Users.ThumbnailURL).setValue(data)
+        self.ref.child("users").child(currentUserUID!).child("thumbnailURL").setValue(data)
     }
     
 
@@ -330,7 +330,7 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
             }))
             alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { (handler) in
                 self.profilePic.image = UIImage(named: "NoImage")
-                self.ref.child("users").child(self.currentUserUID!).child(Constants.Users.ImageURL).setValue("")
+                self.ref.child("users").child(self.currentUserUID!).child("imageURL").setValue("")
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         }

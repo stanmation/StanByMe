@@ -27,24 +27,4 @@ struct Constants {
         static let ToProfileVC = "toProfileSeque"
     }
     
-    struct Users {
-        static let Nickname = "nickname"
-        static let UID = "uid"
-        static let LookingFor = "lookingFor"
-        static let AboutMe = "aboutMe"
-        static let ImageURL = "imageURL"
-        static let ThumbnailURL = "thumbnailURL"
-    }
-    
-
-    struct MessageFields {
-        static let Nickname = "nickname"
-        static let Text = "text"
-        static let PhotoURL = "photoURL"
-        static let ImageURL = "imageURL"
-        static let PartnerNickname = "partnerNickname"
-        static let UID = "uid"
-        static let ThumbnailURL = "thumbnailURL"
-
-    }
 }

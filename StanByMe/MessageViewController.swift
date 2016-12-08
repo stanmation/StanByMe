@@ -277,7 +277,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         
         // set up current user data
         let currentUserDict = self.currentUserData.value as! Dictionary<String, String>
-        let currentUserUID = currentUserDict[Constants.MessageFields.UID] as String!
+        let currentUserUID = currentUserDict["uid"] as String!
         let currentUserNickname = currentUserDict["nickname"] as String!
 
         // set partner data in user-messages
@@ -286,29 +286,29 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         
         var myData = [String: String]()
         myData["status"] = "sender"
-        myData[Constants.MessageFields.Text] = text
+        myData["text"] = text
         
-        let currentUserThumbnailURL = currentUserDict[Constants.Users.ThumbnailURL]!
-        let partnerThumbnailURL = partnerUserDict[Constants.Users.ThumbnailURL]!
+        let currentUserThumbnailURL = currentUserDict["thumbnailURL"]!
+        let partnerThumbnailURL = partnerUserDict["thumbnailURL"]!
 
         var myChatData = [String: String]()
         myChatData["lastUpdate"] = now
         myChatData["lastMessage"] = text
         myChatData["partnerNickname"] = partnerNickname
         myChatData["read"] = "read"
-        myChatData[Constants.MessageFields.ThumbnailURL] = partnerThumbnailURL
+        myChatData["thumbnailURL"] = partnerThumbnailURL
 
         // set up partner data
         var partnerData = [String: String]()
         partnerData["status"] = "receiver"
-        partnerData[Constants.MessageFields.Text] = text
+        partnerData["text"] = text
         
         var partnerChatData = [String: String]()
         partnerChatData["lastUpdate"] = now
         partnerChatData["lastMessage"] = text
         partnerChatData["partnerNickname"] = currentUserNickname
         partnerChatData["read"] = "unread"
-        partnerChatData[Constants.MessageFields.ThumbnailURL] = currentUserThumbnailURL
+        partnerChatData["thumbnailURL"] = currentUserThumbnailURL
         
         // Push data to Firebase Database
         
