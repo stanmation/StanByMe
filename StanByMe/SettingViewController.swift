@@ -112,8 +112,6 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         self.settings?.nickname = nicknameField.text
         self.settings?.aboutMe = aboutMeField.text
         self.settings?.lookingFor = lookingForField.text
-
-        
     }
     
     func configureStorage() {
@@ -122,7 +120,6 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     @IBAction func profilePicTapped(_ sender: AnyObject) {
         displayAlert(alertType: "profilePic")
-
     }
 
     func addPhoto() {
@@ -251,25 +248,6 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         // if it's a photo from the library, not an image from the camera
         if #available(iOS 8.0, *), let referenceURL = info[UIImagePickerControllerReferenceURL] {
-//            let assets = PHAsset.fetchAssets(withALAssetURLs: [referenceURL as! URL], options: nil)
-//            let asset = assets.firstObject
-//            asset?.requestContentEditingInput(with: nil, completionHandler: { [weak self] (contentEditingInput, info) in
-//                guard let strongSelf = self else { return }
-//                let imageFile = contentEditingInput?.fullSizeImageURL
-//
-//                let filePath = "\(strongSelf.currentUserUID!)/Profile/\((referenceURL as AnyObject).lastPathComponent!)"
-//
-//                strongSelf.oldPhotoRef = filePath
-//                strongSelf.storageRef.child(filePath)
-//                    .putFile(imageFile!, metadata: nil) { (metadata, error) in
-//                        if let error = error {
-//                            let nsError = error as NSError
-//                            print("Error uploading: \(nsError.localizedDescription)")
-//                            return
-//                        }
-//                        strongSelf.setImage(withData: strongSelf.storageRef.child((metadata?.path)!).description)
-//                    }
-//                })
             
             let imageData = UIImageJPEGRepresentation(portraitImage!, 0.8)
             let thumbnailData = UIImageJPEGRepresentation(thumbnail!, 0.6)

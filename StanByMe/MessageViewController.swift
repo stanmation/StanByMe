@@ -23,7 +23,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet weak var sendButton: UIButton!
     
     var ref: FIRDatabaseReference!
-    var messages = [FIRDataSnapshot]()
+//    var messages = [FIRDataSnapshot]()
     var currentUserData = FIRDataSnapshot()
     var partnerUserData = FIRDataSnapshot()
     
@@ -45,6 +45,9 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        newMessageTextField.addTarget(self, action: #selector(textChanged), for: .editingChanged)
+        
+        // configure tableView
         myTableView.register(MessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         myTableView.estimatedRowHeight = 44
         
@@ -83,14 +86,23 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
+        disableSendButton()
         subscribeToKeyboardNotifications()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         unsubscribeToKeyboardNotifications()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if (fetchedResultsController?.fetchedObjects?.count)! > 0 {
+            scrollToTheBottom()
+        }
     }
     
     func configureCoreData() {
@@ -143,7 +155,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         _userMessageRefHandle = self.ref.child("user-messages").child(currentUserID!).child(partnerUID).child("messages").observe(.childAdded, with: { [weak self] (snapshot) -> Void in
             
             guard let strongSelf = self else { return }
-            strongSelf.messages.append(snapshot)
+//            strongSelf.messages.append(snapshot)
             
             let message = snapshot.value as! [String: String]
             var nickname = String()
@@ -188,6 +200,18 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
 
     }
     
+    func disableSendButton() {
+        sendButton.isEnabled = false
+        sendButton.isUserInteractionEnabled = false
+        sendButton.backgroundColor = UIColor.gray
+    }
+    
+    func scrollToTheBottom() {
+        // scroll to the bottom of tableView
+        let indexPath = IndexPath(row: (fetchedResultsController?.fetchedObjects?.count)! - 1, section: 0)
+        myTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+    }
+    
     
     func configureStorage() {
         storageRef = FIRStorage.storage().reference(forURL: "gs://stanbyme-2e590.appspot.com")
@@ -230,10 +254,19 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return fetchedResultsController?.sections?.count ?? 0
-
     }
     
-    // MARK: Delegate method
+    
+    func textChanged() {
+        if newMessageTextField.text != "" {
+            sendButton.isEnabled = true
+            sendButton.isUserInteractionEnabled = true
+            sendButton.backgroundColor = UIColor.purple
+        } else {
+            disableSendButton()
+        }
+    }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController?.sections![section]
@@ -257,11 +290,16 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
 
     }
     
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
 
     // MARK: UITextViewDelegate protocol methods
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         sendMessage(text: textField.text!)
         textField.text = ""
+        disableSendButton()
         newMessageTextField.resignFirstResponder()
         
         return true
@@ -326,7 +364,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
             let chat = Chat(currentUserId: currentUserUID!, partnerId: partnerUID, partnerNickname: partnerNickname, lastUpdate: now, read: "read", lastMessage: text, thumbnailData: nil, context: stack.context)
             self.chat = chat
         }
-    
+
     }
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -365,6 +403,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         myTableView.endUpdates()
+        scrollToTheBottom()
     }
 
 }

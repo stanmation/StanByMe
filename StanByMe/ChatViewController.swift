@@ -55,7 +55,6 @@ class ChatViewController: CoreDataTableViewController {
             
             ref.child("user-messages").child(currentUserID!).child((chat?.partnerId!)!).child("info").child("read").setValue("read")
 
-            
             controller.hidesBottomBarWhenPushed = true
             
         }
@@ -64,7 +63,6 @@ class ChatViewController: CoreDataTableViewController {
     
     func configureDatabase() {
         ref = FIRDatabase.database().reference()
-        
 
         _refHandle = self.ref.child("user-messages").child(currentUserID!).queryOrdered(byChild: "lastUpdate").observe(.value, with: { [weak self] (snapshot) -> Void in
             guard let strongSelf = self else { return }
@@ -126,7 +124,7 @@ class ChatViewController: CoreDataTableViewController {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "tableViewCell") as! ChatTableViewCell!
         
         if chat.read == "unread" {
-            cell?.backgroundColor = UIColor.red
+            cell?.backgroundColor = UIColor.init(colorLiteralRed: 220/255, green: 220/255, blue: 225/255, alpha: 1.0)
         } else {
             cell?.backgroundColor = UIColor.clear
         }
@@ -136,7 +134,7 @@ class ChatViewController: CoreDataTableViewController {
         } else {
             cell?.profileImageView?.image = UIImage(named: "NoImage")
         }
-        
+                
         cell?.nicknameLabel?.text = chat.partnerNickname
         cell?.messageTextField?.text = chat.lastMessage
 
@@ -174,6 +172,10 @@ class ChatViewController: CoreDataTableViewController {
             
 
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 55
     }
     
 

@@ -20,6 +20,8 @@ class UserProfileViewController: UIViewController {
     @IBOutlet weak var aboutMeTextView: UITextView!
     @IBOutlet weak var lookingForTextView: UITextView!
     @IBOutlet weak var profilePicImageView: UIImageView!
+    
+    @IBOutlet weak var imageProgressIndicator: UIActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,15 +67,17 @@ class UserProfileViewController: UIViewController {
                         print("Error downloading: \(error)")
                         return
                     }
+                    self.imageProgressIndicator.stopAnimating()
                     self.profilePicImageView.image = UIImage.init(data: data!)
                 }
             } else if let URL = URL(string: imageURL), let data = try? Data(contentsOf: URL) {
-                
+                self.imageProgressIndicator.stopAnimating()
                 self.profilePicImageView.image = UIImage.init(data: data)
             }
         } else {
             self.profilePicImageView.image  = UIImage(named: "NoImage_Large")
             if let photoURL = user["imageURL"], let URL = URL(string: photoURL), let data = try? Data(contentsOf: URL) {
+                self.imageProgressIndicator.stopAnimating()
                 self.profilePicImageView.image  = UIImage(data: data)
             }
         }

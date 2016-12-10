@@ -19,6 +19,8 @@ class MessageTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        messageLabel.font = UIFont(name: messageLabel.font.fontName, size: 13)
+        
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         bubbleImageView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -66,7 +68,6 @@ class MessageTableViewCell: UITableViewCell {
         }
     }
     
-    
 }
 
 let bubble = makeBubble()
@@ -77,7 +78,7 @@ func makeBubble() -> (incoming: UIImage, outgoing: UIImage) {
     let insetsIncoming = UIEdgeInsets(top: 17, left: 26.5, bottom: 17.5, right: 21)
     let insetsOutgoing = UIEdgeInsets(top: 17, left: 21, bottom: 17.5, right: 26.5)
     
-    let outgoing = coloredImage(image: image, red:0/225, green: 122/255, blue: 255/255, alpha: 1).resizableImage(withCapInsets: insetsOutgoing)
+    let outgoing = coloredImage(image: image, red: 186/225, green: 127/255, blue: 186/255, alpha: 1).resizableImage(withCapInsets: insetsOutgoing)
     
     let flippedImage = UIImage(cgImage: image.cgImage!, scale: image.scale, orientation: UIImageOrientation.upMirrored)
     

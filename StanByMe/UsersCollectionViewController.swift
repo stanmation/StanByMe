@@ -27,6 +27,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     @IBOutlet weak var warningMsgTextView: UITextView!
     @IBOutlet weak var myCollectionView: UICollectionView!
     @IBOutlet weak var flowlayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var getUsersProgressIndicator: UIActivityIndicatorView!
 
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -38,6 +39,10 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //lock orientation
+//        let value = UIInterfaceOrientation.portrait.rawValue
+//        UIDevice.current.setValue(value, forKey: "orientation")
         
         locationManager.startUpdatingLocation()
         
@@ -97,6 +102,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     func configureDatabase() {
         
+        getUsersProgressIndicator.startAnimating()
+        
         // set your user location
         let currentUserID = FIRAuth.auth()?.currentUser?.uid
         geoFire = GeoFire(firebaseRef: ref.child("locations"))
@@ -142,7 +149,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                 
                 strongSelf.users = tempUsers
                 strongSelf.myCollectionView.reloadData()
-                
+                strongSelf.getUsersProgressIndicator.stopAnimating()
+
             }) { (error) in
                 print(error.localizedDescription)
             }
