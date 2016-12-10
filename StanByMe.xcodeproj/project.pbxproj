@@ -17,6 +17,7 @@
 		1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0611FE1DC491F300720E82 /* SignInViewController.swift */; };
 		1D0612011DC4A18100720E82 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0612001DC4A18100720E82 /* MessageViewController.swift */; };
 		1D101FD11DFB6663009A1158 /* MyTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD01DFB6663009A1158 /* MyTabViewController.swift */; };
+		1D101FD51DFBB612009A1158 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD41DFBB612009A1158 /* Message.swift */; };
 		1D5B5C4F1DF431C3003C0D07 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */; };
 		1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC21DC9F2B200375810 /* GeoFire.m */; };
 		1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC41DC9F2B200375810 /* GFBase32Utils.m */; };
@@ -34,7 +35,6 @@
 		1DC9AB711DE8E93F000EFA3A /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */; };
 		1DC9AB7B1DE8F723000EFA3A /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */; };
 		1DC9AB851DE90273000EFA3A /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */; };
-		1DC9AB921DE93CF2000EFA3A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB8E1DE93CF2000EFA3A /* Message.swift */; };
 		1DC9AB931DE93CF2000EFA3A /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */; };
 		1DCAF84A1DE2F1EA00F844E3 /* ChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCAF8491DE2F1EA00F844E3 /* ChatTableViewCell.swift */; };
 		1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */; };
@@ -57,6 +57,7 @@
 		1D0611FE1DC491F300720E82 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		1D0612001DC4A18100720E82 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		1D101FD01DFB6663009A1158 /* MyTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTabViewController.swift; sourceTree = "<group>"; };
+		1D101FD41DFBB612009A1158 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = CoreData/Message.swift; sourceTree = "<group>"; };
 		1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		1D6D1A041DC9E7BD00375810 /* StanByMe-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StanByMe-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6D1ABB1DC9F2B200375810 /* GeoFire.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoFire.h; sourceTree = "<group>"; };
@@ -85,7 +86,6 @@
 		1DC9AB701DE8E93F000EFA3A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
-		1DC9AB8E1DE93CF2000EFA3A /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = /Users/stanmation/Documents/XcodeProjects/StanByMe/StanByMe/CoreData/Message.swift; sourceTree = "<absolute>"; };
 		1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "CoreData/Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1DCAF8491DE2F1EA00F844E3 /* ChatTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewCell.swift; sourceTree = "<group>"; };
 		1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewController.swift; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 				1DC1656D1DF1953D00E357F6 /* Settings+CoreDataProperties.swift */,
 				1DC1655C1DF1852F00E357F6 /* Chat.swift */,
 				1DC1655D1DF1852F00E357F6 /* Chat+CoreDataProperties.swift */,
-				1DC9AB8E1DE93CF2000EFA3A /* Message.swift */,
+				1D101FD41DFBB612009A1158 /* Message.swift */,
 				1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */,
 				1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */,
 				1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */,
@@ -374,6 +374,7 @@
 				1D0612011DC4A18100720E82 /* MessageViewController.swift in Sources */,
 				1D5B5C4F1DF431C3003C0D07 /* MessageTableViewCell.swift in Sources */,
 				1DC1656F1DF1953D00E357F6 /* Settings+CoreDataProperties.swift in Sources */,
+				1D101FD51DFBB612009A1158 /* Message.swift in Sources */,
 				1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */,
 				1DC9AB7B1DE8F723000EFA3A /* CoreDataStack.swift in Sources */,
 				1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */,
@@ -382,7 +383,6 @@
 				1DC1656E1DF1953D00E357F6 /* Settings.swift in Sources */,
 				1D817B8B1DDFBC9E00309161 /* ChatViewController.swift in Sources */,
 				1D101FD11DFB6663009A1158 /* MyTabViewController.swift in Sources */,
-				1DC9AB921DE93CF2000EFA3A /* Message.swift in Sources */,
 				1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */,
 				1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */,
 				1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */,
