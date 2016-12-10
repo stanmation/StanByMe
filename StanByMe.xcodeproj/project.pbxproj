@@ -17,7 +17,12 @@
 		1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0611FE1DC491F300720E82 /* SignInViewController.swift */; };
 		1D0612011DC4A18100720E82 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0612001DC4A18100720E82 /* MessageViewController.swift */; };
 		1D101FD11DFB6663009A1158 /* MyTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD01DFB6663009A1158 /* MyTabViewController.swift */; };
-		1D101FD51DFBB612009A1158 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD41DFBB612009A1158 /* Message.swift */; };
+		1D101FD71DFBCE80009A1158 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD61DFBCE80009A1158 /* Chat.swift */; };
+		1D101FDD1DFBCE93009A1158 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD81DFBCE93009A1158 /* Chat+CoreDataProperties.swift */; };
+		1D101FDE1DFBCE93009A1158 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD91DFBCE93009A1158 /* Message.swift */; };
+		1D101FDF1DFBCE93009A1158 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FDA1DFBCE93009A1158 /* Message+CoreDataProperties.swift */; };
+		1D101FE01DFBCE93009A1158 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FDB1DFBCE93009A1158 /* Settings.swift */; };
+		1D101FE11DFBCE93009A1158 /* Settings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FDC1DFBCE93009A1158 /* Settings+CoreDataProperties.swift */; };
 		1D5B5C4F1DF431C3003C0D07 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */; };
 		1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC21DC9F2B200375810 /* GeoFire.m */; };
 		1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC41DC9F2B200375810 /* GFBase32Utils.m */; };
@@ -28,14 +33,9 @@
 		1D87E1231DD472F8003E819B /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D87E1221DD472F8003E819B /* UserProfileViewController.swift */; };
 		1DB5DA4C1DCD4CB600842664 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */; };
 		1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DBF38691DD0822D00E5406A /* SignUpViewController.swift */; };
-		1DC1655E1DF1852F00E357F6 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC1655C1DF1852F00E357F6 /* Chat.swift */; };
-		1DC1655F1DF1852F00E357F6 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC1655D1DF1852F00E357F6 /* Chat+CoreDataProperties.swift */; };
-		1DC1656E1DF1953D00E357F6 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC1656C1DF1953D00E357F6 /* Settings.swift */; };
-		1DC1656F1DF1953D00E357F6 /* Settings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC1656D1DF1953D00E357F6 /* Settings+CoreDataProperties.swift */; };
 		1DC9AB711DE8E93F000EFA3A /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */; };
 		1DC9AB7B1DE8F723000EFA3A /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */; };
 		1DC9AB851DE90273000EFA3A /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */; };
-		1DC9AB931DE93CF2000EFA3A /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */; };
 		1DCAF84A1DE2F1EA00F844E3 /* ChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCAF8491DE2F1EA00F844E3 /* ChatTableViewCell.swift */; };
 		1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */; };
 		1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */; };
@@ -57,7 +57,12 @@
 		1D0611FE1DC491F300720E82 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		1D0612001DC4A18100720E82 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		1D101FD01DFB6663009A1158 /* MyTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTabViewController.swift; sourceTree = "<group>"; };
-		1D101FD41DFBB612009A1158 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = CoreData/Message.swift; sourceTree = "<group>"; };
+		1D101FD61DFBCE80009A1158 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Chat.swift; path = CoreDataModels/Chat.swift; sourceTree = "<group>"; };
+		1D101FD81DFBCE93009A1158 /* Chat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Chat+CoreDataProperties.swift"; path = "CoreDataModels/Chat+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1D101FD91DFBCE93009A1158 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = CoreDataModels/Message.swift; sourceTree = "<group>"; };
+		1D101FDA1DFBCE93009A1158 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "CoreDataModels/Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1D101FDB1DFBCE93009A1158 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = CoreDataModels/Settings.swift; sourceTree = "<group>"; };
+		1D101FDC1DFBCE93009A1158 /* Settings+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Settings+CoreDataProperties.swift"; path = "CoreDataModels/Settings+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		1D6D1A041DC9E7BD00375810 /* StanByMe-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StanByMe-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6D1ABB1DC9F2B200375810 /* GeoFire.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoFire.h; sourceTree = "<group>"; };
@@ -79,14 +84,9 @@
 		1D87E1221DD472F8003E819B /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1DBF38691DD0822D00E5406A /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
-		1DC1655C1DF1852F00E357F6 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Chat.swift; path = CoreData/Chat.swift; sourceTree = "<group>"; };
-		1DC1655D1DF1852F00E357F6 /* Chat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Chat+CoreDataProperties.swift"; path = "CoreData/Chat+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		1DC1656C1DF1953D00E357F6 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = CoreData/Settings.swift; sourceTree = "<group>"; };
-		1DC1656D1DF1953D00E357F6 /* Settings+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Settings+CoreDataProperties.swift"; path = "CoreData/Settings+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1DC9AB701DE8E93F000EFA3A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		1DC9AB841DE90273000EFA3A /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
-		1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "CoreData/Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1DCAF8491DE2F1EA00F844E3 /* ChatTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewCell.swift; sourceTree = "<group>"; };
 		1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewController.swift; sourceTree = "<group>"; };
 		1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -186,12 +186,12 @@
 		1DC9AB6C1DE8E882000EFA3A /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1DC1656C1DF1953D00E357F6 /* Settings.swift */,
-				1DC1656D1DF1953D00E357F6 /* Settings+CoreDataProperties.swift */,
-				1DC1655C1DF1852F00E357F6 /* Chat.swift */,
-				1DC1655D1DF1852F00E357F6 /* Chat+CoreDataProperties.swift */,
-				1D101FD41DFBB612009A1158 /* Message.swift */,
-				1DC9AB8F1DE93CF2000EFA3A /* Message+CoreDataProperties.swift */,
+				1D101FD81DFBCE93009A1158 /* Chat+CoreDataProperties.swift */,
+				1D101FD91DFBCE93009A1158 /* Message.swift */,
+				1D101FDA1DFBCE93009A1158 /* Message+CoreDataProperties.swift */,
+				1D101FDB1DFBCE93009A1158 /* Settings.swift */,
+				1D101FDC1DFBCE93009A1158 /* Settings+CoreDataProperties.swift */,
+				1D101FD61DFBCE80009A1158 /* Chat.swift */,
 				1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */,
 				1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */,
 			);
@@ -370,24 +370,24 @@
 				1D87E1231DD472F8003E819B /* UserProfileViewController.swift in Sources */,
 				1D0611E51DC4748000720E82 /* AppDelegate.swift in Sources */,
 				1DC9AB711DE8E93F000EFA3A /* Model.xcdatamodeld in Sources */,
+				1D101FE01DFBCE93009A1158 /* Settings.swift in Sources */,
 				1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */,
 				1D0612011DC4A18100720E82 /* MessageViewController.swift in Sources */,
 				1D5B5C4F1DF431C3003C0D07 /* MessageTableViewCell.swift in Sources */,
-				1DC1656F1DF1953D00E357F6 /* Settings+CoreDataProperties.swift in Sources */,
-				1D101FD51DFBB612009A1158 /* Message.swift in Sources */,
+				1D101FD71DFBCE80009A1158 /* Chat.swift in Sources */,
 				1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */,
 				1DC9AB7B1DE8F723000EFA3A /* CoreDataStack.swift in Sources */,
 				1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */,
 				1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */,
-				1DC1655E1DF1852F00E357F6 /* Chat.swift in Sources */,
-				1DC1656E1DF1953D00E357F6 /* Settings.swift in Sources */,
+				1D101FDE1DFBCE93009A1158 /* Message.swift in Sources */,
+				1D101FDF1DFBCE93009A1158 /* Message+CoreDataProperties.swift in Sources */,
 				1D817B8B1DDFBC9E00309161 /* ChatViewController.swift in Sources */,
 				1D101FD11DFB6663009A1158 /* MyTabViewController.swift in Sources */,
 				1D6D1ACE1DC9F2B200375810 /* GFGeoHashQuery.m in Sources */,
 				1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */,
 				1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */,
-				1DC1655F1DF1852F00E357F6 /* Chat+CoreDataProperties.swift in Sources */,
-				1DC9AB931DE93CF2000EFA3A /* Message+CoreDataProperties.swift in Sources */,
+				1D101FDD1DFBCE93009A1158 /* Chat+CoreDataProperties.swift in Sources */,
+				1D101FE11DFBCE93009A1158 /* Settings+CoreDataProperties.swift in Sources */,
 				1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
