@@ -21,6 +21,9 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     var remoteConfig: FIRRemoteConfig!
     var geoFire: GeoFire?
     
+    var timerCountdown = 0
+    var timer: Timer?
+    
     let locationManager = CLLocationManager()
     var currentUserLocation = CLLocation()
     
@@ -72,6 +75,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         // Do some refresh
         locationManager.startUpdatingLocation()
         refreshControl.endRefreshing()
+
     }
     
     
@@ -93,6 +97,20 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         }
     }
     
+    func updateTimer() {
+        print(timerCountdown)
+        timerCountdown += 1
+
+        if timerCountdown > 10 {
+            getUsersProgressIndicator.stopAnimating()
+            timer?.invalidate()
+            timerCountdown = 0
+            displayErrorAlert(alertType: .networkError, message: "")
+        }
+        
+    }
+    
+    
     func breakingSentenceIntoKeywords(sentence: String) -> [String]{
         let lowercaseSentence = sentence.lowercased()
         let arrayString = lowercaseSentence.components(separatedBy: " ")
@@ -101,6 +119,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     }
     
     func configureDatabase() {
+
         
         getUsersProgressIndicator.startAnimating()
         
@@ -129,6 +148,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             tempClosestUsers[key!] = location!
             strongSelf.closestUsers = tempClosestUsers
             strongSelf.ref.child("users").child(key!).observeSingleEvent(of: .value, with: {  (snapshot) in
+                
+//                strongSelf.timer?.invalidate()
 
                 let yourAboutMeSentence = snapshot.childSnapshot(forPath: "aboutMe").value as! String
                 let yourAboutMeArray = strongSelf.breakingSentenceIntoKeywords(sentence: yourAboutMeSentence)
@@ -143,8 +164,11 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                 // if the no of keyword matches are more than 0, we include that users into the list
                 if counter > 0 {
                     var user = snapshot.value as! [String: String]
-                    user["noMatch"] = String(counter)
-                    tempUsers.append(user)
+                    // this will disable listing your profile on your list
+                    if user["uid"] != currentUserID {
+                        user["noMatch"] = String(counter)
+                        tempUsers.append(user)
+                    }
                 }
                 
                 strongSelf.users = tempUsers
@@ -197,9 +221,14 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         cell.keywordMatchTextField.text = user["noMatch"]! + " matches"
         
         if let thumbnailURL = user["thumbnailURL"], thumbnailURL.hasPrefix("gs://") {
-            FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
+            FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ [weak self] (data, error) in
+                guard let strongSelf = self else { return }
+
                 if let error = error {
                     print("Error downloading: \(error)")
+                    strongSelf.displayErrorAlert(alertType: .networkError, message: "")
+                    cell.imageView?.image = UIImage(named: "NoImage")
+                    cell.downloadProgressIndicator.stopAnimating()
                     return
                 }
                 cell.downloadProgressIndicator.stopAnimating()
@@ -226,6 +255,11 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         currentUserLocation = locations[0] as CLLocation
         locationManager.stopUpdatingLocation()
         configureDatabase()
+        
+
+        // set the time out and will throw an error if time's up
+//        timerCountdown = 0
+//        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
     }
     
 }

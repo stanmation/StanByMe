@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="fcK-Yz-TM1">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -47,7 +46,6 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="didTapSignUp:" destination="fcK-Yz-TM1" eventType="touchUpInside" id="GH0-pt-J1C"/>
                                     <segue destination="0t1-zE-njE" kind="presentation" id="5rW-hc-IXU"/>
                                 </connections>
                             </button>
@@ -608,6 +606,7 @@ Girl</string>
                                     <outletCollection property="gestureRecognizers" destination="pRX-eQ-fx1" appends="YES" id="qeg-Sp-Nrm"/>
                                 </connections>
                             </imageView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="xd9-rM-C6z"/>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -624,12 +623,14 @@ Girl</string>
                             <constraint firstItem="16r-ju-ts6" firstAttribute="leading" secondItem="aQZ-oo-gLY" secondAttribute="trailing" constant="3" id="W9b-be-lVP"/>
                             <constraint firstItem="jyx-9s-WMo" firstAttribute="leading" secondItem="ANV-8P-8D7" secondAttribute="leading" constant="8" id="clk-7I-IRl"/>
                             <constraint firstAttribute="trailing" secondItem="438-XD-Qss" secondAttribute="trailing" constant="7" id="d1S-Rj-mZ4"/>
+                            <constraint firstItem="xd9-rM-C6z" firstAttribute="centerY" secondItem="wT6-n2-lzz" secondAttribute="centerY" id="dYu-cM-xg0"/>
                             <constraint firstAttribute="trailing" secondItem="16r-ju-ts6" secondAttribute="trailing" constant="7" id="hSr-Hw-f6f"/>
                             <constraint firstAttribute="trailing" secondItem="qh2-6a-Pt4" secondAttribute="trailing" constant="7" id="isW-zO-BYz"/>
                             <constraint firstItem="jyx-9s-WMo" firstAttribute="top" secondItem="STN-tD-pmU" secondAttribute="bottom" constant="11" id="jbz-F0-WdY"/>
                             <constraint firstItem="16r-ju-ts6" firstAttribute="top" secondItem="qh2-6a-Pt4" secondAttribute="bottom" constant="1" id="l7M-2Q-WCl"/>
                             <constraint firstItem="aQZ-oo-gLY" firstAttribute="leading" secondItem="ANV-8P-8D7" secondAttribute="leading" constant="8" id="lri-Rh-CnA"/>
                             <constraint firstItem="STN-tD-pmU" firstAttribute="leading" secondItem="ANV-8P-8D7" secondAttribute="leading" constant="8" id="mwM-pv-yvw"/>
+                            <constraint firstItem="xd9-rM-C6z" firstAttribute="centerX" secondItem="wT6-n2-lzz" secondAttribute="centerX" id="nFN-4C-H47"/>
                             <constraint firstItem="16r-ju-ts6" firstAttribute="centerY" secondItem="ANV-8P-8D7" secondAttribute="centerY" id="nsv-13-xn1"/>
                             <constraint firstItem="aQZ-oo-gLY" firstAttribute="top" secondItem="jyx-9s-WMo" secondAttribute="bottom" constant="11" id="qOs-so-ZVF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="uiD-Vm-FcT" secondAttribute="trailing" constant="52" id="x8u-QY-9KZ"/>
@@ -640,6 +641,7 @@ Girl</string>
                     <navigationItem key="navigationItem" id="pS7-Mr-rkK"/>
                     <connections>
                         <outlet property="aboutMeField" destination="qh2-6a-Pt4" id="mCN-hF-KHs"/>
+                        <outlet property="imageUploadProgressIndicator" destination="xd9-rM-C6z" id="3gK-6S-FbJ"/>
                         <outlet property="lookingForField" destination="16r-ju-ts6" id="jqM-gY-KSE"/>
                         <outlet property="nicknameField" destination="438-XD-Qss" id="Oye-6x-s5E"/>
                         <outlet property="profilePic" destination="wT6-n2-lzz" id="8aj-Rj-oMw"/>
@@ -803,7 +805,7 @@ Girl</string>
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="ODL-As-NGH">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ODL-As-NGH">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.68235294120000001" green="0.68235294120000001" blue="0.70588235290000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -827,7 +829,7 @@ Girl</string>
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="zPj-qi-KVT">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="zPj-qi-KVT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
@@ -850,7 +852,7 @@ Girl</string>
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
                     </tabBarItem>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="vPn-aC-Ggp">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="vPn-aC-Ggp">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
@@ -872,6 +874,6 @@ Girl</string>
         <image name="NoImage" width="70" height="68"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="xAd-Q2-MkV"/>
+        <segue reference="1FJ-pX-65C"/>
     </inferredMetricsTieBreakers>
 </document>

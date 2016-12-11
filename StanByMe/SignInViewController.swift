@@ -30,31 +30,23 @@ class SignInViewController: UIViewController, UIAlertViewDelegate {
   }
 
   @IBAction func didTapSignIn(_ sender: AnyObject) {
+    
+    // check if password field is not empty
+    if passwordField.text == "" {
+        displayErrorAlert(alertType: .badCredentials, message: "Please fill in your password")
+        return
+    }
+    
     guard let email = emailField.text, let password = passwordField.text else {return}
+
     FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
+        
         if let error = error {
             print(error.localizedDescription)
-            
-            if self.passwordField.text == "" {
-                self.displayAlert(alertType: "badCredentials", message: "Please fill in your password")
-            } else {
-                self.displayAlert(alertType: "badCredentials", message: error.localizedDescription)
-            }
-            
+            self.displayErrorAlert(alertType: .signInError, message: error.localizedDescription)
             return
         }
         self.signedIn(user!)
-    })
-  }
-
-  @IBAction func didTapSignUp(_ sender: AnyObject) {
-    guard let email = emailField.text, let password = passwordField.text else {return}
-    FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
-        if let error = error {
-            print(error.localizedDescription)
-            return
-        }
-        self.setDisplayName(user!)
     })
   }
 
@@ -102,16 +94,7 @@ class SignInViewController: UIViewController, UIAlertViewDelegate {
         NotificationCenter.default.post(name: notificationName, object: nil, userInfo: nil)
         performSegue(withIdentifier: Constants.Segues.SignInToApp, sender: nil)
     }
-    
-    func displayAlert(alertType: String, message: String) {
-        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
-        if alertType == "badCredentials" {
-            alert.title = "Error"
-            alert.message = message
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        }
-        present(alert, animated: true, completion: nil)
-    }
+
 
 }
 

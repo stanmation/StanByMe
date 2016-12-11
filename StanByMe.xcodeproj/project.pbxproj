@@ -40,6 +40,7 @@
 		1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */; };
 		1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */; };
 		1DD0090C1DD1C8230035B928 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0090B1DD1C8230035B928 /* SettingViewController.swift */; };
+		1DDFD1411DFD1DB00037C441 /* UIViewController+ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDFD1401DFD1DB00037C441 /* UIViewController+ErrorAlert.swift */; };
 		A140FD5FDF139BC37D5AF180 /* Pods_StanByMe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,7 @@
 		1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewController.swift; sourceTree = "<group>"; };
 		1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewCell.swift; sourceTree = "<group>"; };
 		1DD0090B1DD1C8230035B928 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		1DDFD1401DFD1DB00037C441 /* UIViewController+ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+ErrorAlert.swift"; sourceTree = "<group>"; };
 		22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StanByMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE3425D57ADB101131646143 /* Pods-StanByMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StanByMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-StanByMe/Pods-StanByMe.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -213,6 +215,7 @@
 				1D0612001DC4A18100720E82 /* MessageViewController.swift */,
 				1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */,
 				1D101FD01DFB6663009A1158 /* MyTabViewController.swift */,
+				1DDFD1401DFD1DB00037C441 /* UIViewController+ErrorAlert.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 				1DC9AB851DE90273000EFA3A /* CoreDataTableViewController.swift in Sources */,
 				1DCAF84A1DE2F1EA00F844E3 /* ChatTableViewCell.swift in Sources */,
 				1D6D1ACF1DC9F2B200375810 /* GFQuery.m in Sources */,
+				1DDFD1411DFD1DB00037C441 /* UIViewController+ErrorAlert.swift in Sources */,
 				1D87E1231DD472F8003E819B /* UserProfileViewController.swift in Sources */,
 				1D0611E51DC4748000720E82 /* AppDelegate.swift in Sources */,
 				1DC9AB711DE8E93F000EFA3A /* Model.xcdatamodeld in Sources */,

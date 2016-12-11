@@ -135,7 +135,6 @@ extension CoreDataStack {
             self.context.performAndWait() {
                 
                 if self.context.hasChanges {
-                    print("save next level")
                     do {
                         try self.context.save()
                     } catch {
@@ -144,7 +143,6 @@ extension CoreDataStack {
                     
                     // now we save in the background
                     self.persistingContext.perform() {
-                        print("persisting")
                         do {
                             try self.persistingContext.save()
                         } catch {
@@ -159,12 +157,6 @@ extension CoreDataStack {
     func autoSave(_ delayInSeconds : Int) {
         
         if delayInSeconds > 0 {
-//            do {
-//                try self.context.save()
-//                print("Autosaving")
-//            } catch {
-//                print("Error while autosaving")
-//            }
             
             save()
             

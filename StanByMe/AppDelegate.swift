@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         print("Doc path: \(paths[0])")
         
-        stack.autoSave(60)
+        stack.autoSave(30)
         
 //        do {
 //            try stack.dropAllData()

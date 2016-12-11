@@ -20,6 +20,8 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     let currentUserUID = FIRAuth.auth()?.currentUser?.uid
     var settings: Settings?
     
+    @IBOutlet weak var imageUploadProgressIndicator: UIActivityIndicatorView!
+    
     let stack = (UIApplication.shared.delegate as! AppDelegate).stack
 
     
@@ -35,6 +37,8 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         configureCoreData()
         configureDatabase()
         configureStorage()
+        
+        imageUploadProgressIndicator.stopAnimating()
 
     }
     
@@ -71,7 +75,13 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
             nicknameField.text = settings.nickname
             aboutMeField.text = settings.aboutMe
             lookingForField.text = settings.lookingFor
-            profilePic.image = UIImage(data: settings.profilePic!)
+            
+            // check if we have profile pic in our db
+            if settings.profilePic != nil {
+                profilePic.image = UIImage(data: settings.profilePic!)
+            } else {
+                profilePic.image = UIImage(named: "NoImage")
+            }
         } else {
             self.settings = Settings(profilePic: nil, aboutYou: "", lookingFor: "", nickname: "", context: stack.context)
         }
@@ -122,14 +132,16 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         displayAlert(alertType: "profilePic")
     }
 
-    func addPhoto() {
+    func addPhoto(source: UIImagePickerControllerSourceType) {
         let picker = UIImagePickerController()
         picker.delegate = self
-        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
-            picker.sourceType = UIImagePickerControllerSourceType.camera
-        } else {
-            picker.sourceType = UIImagePickerControllerSourceType.photoLibrary
-        }
+//        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
+//            picker.sourceType = UIImagePickerControllerSourceType.camera
+//        } else {
+//            picker.sourceType = UIImagePickerControllerSourceType.photoLibrary
+//        }
+        picker.sourceType = source
+
         present(picker, animated: true, completion:nil)
 
     }
@@ -240,58 +252,46 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
             
             let squareImage = cropImageToSquare(image: pickedImage)
             thumbnail = squareImage.resizeWith(width: 100)
-
             profilePic.contentMode = .scaleAspectFill
-            profilePic.image = thumbnail
-            
+
         }
         
-        // if it's a photo from the library, not an image from the camera
-        if #available(iOS 8.0, *), let referenceURL = info[UIImagePickerControllerReferenceURL] {
-            
-            let imageData = UIImageJPEGRepresentation(portraitImage!, 0.8)
-            let thumbnailData = UIImageJPEGRepresentation(thumbnail!, 0.6)
-            let imagePath = "\(currentUserUID!)/Profile/asset.jpg"
-            let thumbnailPath = "\(currentUserUID!)/Thumbnail/asset.jpg"
+        // activate indicator while uploading
+        imageUploadProgressIndicator.startAnimating()
+        
+        let imageData = UIImageJPEGRepresentation(portraitImage!, 0.8)
+        let thumbnailData = UIImageJPEGRepresentation(thumbnail!, 0.6)
+        let imagePath = "\(currentUserUID!)/Profile/asset.jpg"
+        let thumbnailPath = "\(currentUserUID!)/Thumbnail/asset.jpg"
 
-            let metadata = FIRStorageMetadata()
-            metadata.contentType = "image/jpeg"
-            self.storageRef.child(imagePath)
-                .put(imageData!, metadata: metadata) { [weak self] (metadata, error) in
-                    if let error = error {
-                        print("Error uploading: \(error)")
-                        return
-                    }
-                    guard let strongSelf = self else {return}
-                    strongSelf.setImageURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
-            }
-            
-            self.storageRef.child(thumbnailPath)
-                .put(thumbnailData!, metadata: metadata) { [weak self] (metadata, error) in
-                    if let error = error {
-                        print("Error uploading: \(error)")
-                        return
-                    }
-                    guard let strongSelf = self else {return}
-                    strongSelf.setThumbnailURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
-            }
-            
-            
-        } else {
-            guard let image = info[UIImagePickerControllerOriginalImage] as! UIImage? else { return }
-            let imageData = UIImageJPEGRepresentation(image, 0.8)
-            let imagePath = "\(currentUserUID!)/\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
-            let metadata = FIRStorageMetadata()
-            metadata.contentType = "image/jpeg"
-            self.storageRef.child(imagePath)
-                .put(imageData!, metadata: metadata) { [weak self] (metadata, error) in
-                    if let error = error {
-                        print("Error uploading: \(error)")
-                        return
-                    }
+        // load into firebase
+        let metadata = FIRStorageMetadata()
+        metadata.contentType = "image/jpeg"
+        self.storageRef.child(imagePath)
+            .put(imageData!, metadata: metadata) { [weak self] (metadata, error) in
                 guard let strongSelf = self else {return}
+                if let error = error {
+                    print("Error uploading: \(error)")
+                    strongSelf.imageUploadProgressIndicator.stopAnimating()
+                    strongSelf.displayErrorAlert(alertType: .networkError, message: "")
+                    return
+                }
+                strongSelf.imageUploadProgressIndicator.stopAnimating()
                 strongSelf.setImageURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
-            }
+        }
+        
+        self.storageRef.child(thumbnailPath)
+            .put(thumbnailData!, metadata: metadata) { [weak self] (metadata, error) in
+                guard let strongSelf = self else {return}
+                if let error = error {
+                    print("Error uploading: \(error)")
+                    strongSelf.imageUploadProgressIndicator.stopAnimating()
+                    strongSelf.displayErrorAlert(alertType: .networkError, message: "")
+                    return
+                }
+                strongSelf.imageUploadProgressIndicator.stopAnimating()
+                strongSelf.setThumbnailURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
+                strongSelf.profilePic.image = thumbnail
         }
     }
     
@@ -302,10 +302,19 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     func displayAlert(alertType: String) {
         let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
         if alertType == "profilePic" {
+            
             alert.title = "Choose your profile picture"
+            
             alert.addAction(UIAlertAction(title: "Select a picture from camera roll", style: .default, handler: { (handler) in
-                self.addPhoto()
+                self.addPhoto(source: .photoLibrary)
             }))
+            
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                alert.addAction(UIAlertAction(title: "Take a picture", style: .default, handler: { (handler) in
+                    self.addPhoto(source: .camera)
+                }))
+            }
+
             alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { (handler) in
                 self.profilePic.image = UIImage(named: "NoImage")
                 self.ref.child("users").child(self.currentUserUID!).child("imageURL").setValue("")
