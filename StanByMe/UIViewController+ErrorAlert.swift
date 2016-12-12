@@ -15,6 +15,7 @@ extension UIViewController {
         case badCredentials
         case networkError
         case signInError
+        case noMatch
     }
     
     func displayErrorAlert(alertType: errorType, message: String) {
@@ -41,6 +42,10 @@ extension UIViewController {
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 break
             
+            case .noMatch:
+                alert.message = "No match found. This can be due to no user around your area, no user with the matching keywords or the network connection failing."
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                break
             
         }
         

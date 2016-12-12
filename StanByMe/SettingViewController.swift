@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 import CoreData
 
-class SettingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIAlertViewDelegate {
+class SettingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UIAlertViewDelegate {
     
     var storageRef: FIRStorageReference!
     fileprivate var _refHandle: FIRDatabaseHandle!
@@ -33,6 +33,10 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        nicknameField.delegate = self
+        aboutMeField.delegate = self
+        lookingForField.delegate = self
     
         configureCoreData()
         configureDatabase()
@@ -237,6 +241,11 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     
     // MARK: delegate methods
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         picker.dismiss(animated: true, completion:nil)

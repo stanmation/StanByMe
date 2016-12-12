@@ -65,6 +65,8 @@ class UserProfileViewController: UIViewController {
                 FIRStorage.storage().reference(forURL: imageURL).data(withMaxSize: INT64_MAX){ (data, error) in
                     if let error = error {
                         print("Error downloading: \(error)")
+                        self.imageProgressIndicator.stopAnimating()
+                        self.displayErrorAlert(alertType: .networkError, message: "")
                         return
                     }
                     self.imageProgressIndicator.stopAnimating()

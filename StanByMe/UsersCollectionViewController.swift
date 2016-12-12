@@ -21,6 +21,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     var remoteConfig: FIRRemoteConfig!
     var geoFire: GeoFire?
     
+    var didFindLocation = false
+    
     var timerCountdown = 0
     var timer: Timer?
     
@@ -73,6 +75,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     // this function will be called when refresh the page by dragging
     func handleRefresh(_ refreshControl: UIRefreshControl) {
         // Do some refresh
+        didFindLocation = false
         locationManager.startUpdatingLocation()
         refreshControl.endRefreshing()
 
@@ -105,9 +108,9 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             getUsersProgressIndicator.stopAnimating()
             timer?.invalidate()
             timerCountdown = 0
-            displayErrorAlert(alertType: .networkError, message: "")
+            self.didFindLocation = true
+            displayErrorAlert(alertType: .noMatch, message: "")
         }
-        
     }
     
     
@@ -118,10 +121,26 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         return arrayString
     }
     
+//    func testNetworkConnection() {
+//        let connectedRef = FIRDatabase.database().reference(withPath: ".info/connected")
+//        connectedRef.observe(.value, with: { (connected) in
+//            if let boolean = connected.value as? Bool , boolean == true {
+//                print("connected")
+//                self.configureDatabase()
+//            } else {
+//                print("disconnected")
+//            }
+//        })
+//    }
+    
     func configureDatabase() {
-
         
         getUsersProgressIndicator.startAnimating()
+        
+        // set the time out and will throw an error if time's up
+        timerCountdown = 0
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
         
         // set your user location
         let currentUserID = FIRAuth.auth()?.currentUser?.uid
@@ -148,8 +167,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
             tempClosestUsers[key!] = location!
             strongSelf.closestUsers = tempClosestUsers
             strongSelf.ref.child("users").child(key!).observeSingleEvent(of: .value, with: {  (snapshot) in
-                
-//                strongSelf.timer?.invalidate()
 
                 let yourAboutMeSentence = snapshot.childSnapshot(forPath: "aboutMe").value as! String
                 let yourAboutMeArray = strongSelf.breakingSentenceIntoKeywords(sentence: yourAboutMeSentence)
@@ -173,7 +190,11 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                 
                 strongSelf.users = tempUsers
                 strongSelf.myCollectionView.reloadData()
-                strongSelf.getUsersProgressIndicator.stopAnimating()
+                
+                if strongSelf.users?.count != 0 {
+                    strongSelf.timer?.invalidate()
+                    strongSelf.getUsersProgressIndicator.stopAnimating()
+                }
 
             }) { (error) in
                 print(error.localizedDescription)
@@ -231,6 +252,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                     cell.downloadProgressIndicator.stopAnimating()
                     return
                 }
+                
                 cell.downloadProgressIndicator.stopAnimating()
                 cell.imageView?.image = UIImage(data: data!)
             }
@@ -254,12 +276,11 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         CLLocation]) {
         currentUserLocation = locations[0] as CLLocation
         locationManager.stopUpdatingLocation()
-        configureDatabase()
+        if didFindLocation == false {
+            configureDatabase()
+            didFindLocation = true
+        }
         
-
-        // set the time out and will throw an error if time's up
-//        timerCountdown = 0
-//        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
     }
     
 }

@@ -25,11 +25,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         stack.autoSave(30)
         
-//        do {
-//            try stack.dropAllData()
-//        } catch {
-//            print("can't drop the data")
-//        }
+        // clear the data in db
+        do {
+            try stack.dropAllData()
+        } catch {
+            print("can't drop the data")
+        }
 
         FIRApp.configure()
         

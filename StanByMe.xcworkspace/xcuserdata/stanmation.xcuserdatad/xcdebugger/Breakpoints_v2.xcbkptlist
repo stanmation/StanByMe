@@ -2,4 +2,69 @@
 <Bucket
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StanByMe/UsersCollectionViewController.swift"
+            timestampString = "503235578.2564"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
+            landmarkName = "configureDatabase()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "StanByMe.UsersCollectionViewController.configureDatabase () -&gt; ()"
+                  moduleName = "StanByMe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stanmation/Documents/XcodeProjects/StanByMe/StanByMe/UsersCollectionViewController.swift"
+                  timestampString = "503233234.01597"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "2574">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "StanByMe.UsersCollectionViewController.(configureDatabase () -&gt; ()).(closure #2)"
+                  moduleName = "StanByMe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stanmation/Documents/XcodeProjects/StanByMe/StanByMe/UsersCollectionViewController.swift"
+                  timestampString = "503233234.020841"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "38">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "StanByMe.UsersCollectionViewController.(configureDatabase () -&gt; ()).(closure #3).(closure #1)"
+                  moduleName = "StanByMe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stanmation/Documents/XcodeProjects/StanByMe/StanByMe/UsersCollectionViewController.swift"
+                  timestampString = "503233234.028477"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "68">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
