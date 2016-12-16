@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import CoreData
+import ReachabilitySwift
 
 class SettingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UIAlertViewDelegate {
     
@@ -19,6 +20,9 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     var oldPhotoRef = ""
     let currentUserUID = FIRAuth.auth()?.currentUser?.uid
     var settings: Settings?
+    
+    let reachability = Reachability()
+    var isNetworkConnected = false
     
     @IBOutlet weak var imageUploadProgressIndicator: UIActivityIndicatorView!
     
@@ -33,10 +37,6 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        nicknameField.delegate = self
-        aboutMeField.delegate = self
-        lookingForField.delegate = self
     
         configureCoreData()
         configureDatabase()
@@ -49,6 +49,49 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     deinit {
         if _refHandle != nil {
             self.ref.child("users").removeObserver(withHandle: _refHandle)
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: ReachabilityChangedNotification, object: nil)
+        
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+        }
+    }
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        reachability?.stopNotifier()
+        NotificationCenter.default.removeObserver(self,
+                                                  name: ReachabilityChangedNotification,
+                                                  object: reachability)
+    }
+    
+    func reachabilityChanged(note: NSNotification) {
+        
+        let reachability = note.object as! Reachability
+        
+        if reachability.isReachable {
+            self.isNetworkConnected = true
+            
+            if reachability.isReachableViaWiFi {
+                print("Reachable via WiFi")
+            } else {
+                print("Reachable via Cellular")
+            }
+        } else {
+            print("Network not reachable")
+            DispatchQueue.main.async {
+                self.isNetworkConnected = false
+                self.displayErrorAlert(alertType: .networkError, message: "")
+            }
         }
     }
     
@@ -151,10 +194,15 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     @IBAction func saveButtonPressed(_ sender: AnyObject) {
-        let path = ref.child("users").child(currentUserUID!)
-        path.child("nickname").setValue(nicknameField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
-        path.child("aboutMe").setValue(aboutMeField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
-        path.child("lookingFor").setValue(lookingForField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+        if isNetworkConnected {
+            let path = ref.child("users").child(currentUserUID!)
+            path.child("nickname").setValue(nicknameField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+            path.child("aboutMe").setValue(aboutMeField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+            path.child("lookingFor").setValue(lookingForField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+        } else {
+            displayErrorAlert(alertType: .networkError, message: "")
+        }
+
     }
     
     

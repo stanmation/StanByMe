@@ -274,7 +274,7 @@
 					1D0611E01DC4748000720E82 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = Q767PD4MNB;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};

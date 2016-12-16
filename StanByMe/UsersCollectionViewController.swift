@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import ReachabilitySwift
 
 class UsersCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CLLocationManagerDelegate {
     
@@ -28,6 +29,9 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     let locationManager = CLLocationManager()
     var currentUserLocation = CLLocation()
+    
+    let reachability = Reachability()
+    var isNetworkConnected = false
     
     @IBOutlet weak var warningMsgTextView: UITextView!
     @IBOutlet weak var myCollectionView: UICollectionView!
@@ -70,6 +74,26 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         flowlayout.minimumLineSpacing = space
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: ReachabilityChangedNotification, object: nil)
+        
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        reachability?.stopNotifier()
+        NotificationCenter.default.removeObserver(self,
+                                                            name: ReachabilityChangedNotification,
+                                                            object: reachability)
+    }
     
 
     // this function will be called when refresh the page by dragging
@@ -77,8 +101,27 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         // Do some refresh
         didFindLocation = false
         locationManager.startUpdatingLocation()
-        refreshControl.endRefreshing()
+    }
+    
+    func reachabilityChanged(note: NSNotification) {
+        
+        let reachability = note.object as! Reachability
+        
+        if reachability.isReachable {
+            self.isNetworkConnected = true
 
+            if reachability.isReachableViaWiFi {
+                print("Reachable via WiFi")
+            } else {
+                print("Reachable via Cellular")
+            }
+        } else {
+            print("Network not reachable")
+            DispatchQueue.main.async {
+                self.isNetworkConnected = false
+                self.displayErrorAlert(alertType: .networkError, message: "")
+            }
+        }
     }
     
     
@@ -276,11 +319,22 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         CLLocation]) {
         currentUserLocation = locations[0] as CLLocation
         locationManager.stopUpdatingLocation()
-        if didFindLocation == false {
-            configureDatabase()
-            didFindLocation = true
-        }
         
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
+
+        if didFindLocation == false {
+            if isNetworkConnected {
+                configureDatabase()
+                didFindLocation = true
+            } else {
+                getUsersProgressIndicator.stopAnimating()
+                displayErrorAlert(alertType: .networkError, message: "")
+            }
+
+
+        }
     }
     
 }

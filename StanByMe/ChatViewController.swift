@@ -27,7 +27,8 @@ class ChatViewController: CoreDataTableViewController {
         // Create a fetchrequest
         let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Chat")
         fr.sortDescriptors = [NSSortDescriptor(key: "lastUpdate", ascending: false)]
-        let pred = NSPredicate(format: "currentUserId == %@", currentUserID!)
+        let pred = NSPredicate(format: "currentUserId == %@ && partnerId != %@", currentUserID!, currentUserID!)
+
         fr.predicate = pred
         
         // Create the FetchedResultsController

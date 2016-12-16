@@ -34,7 +34,7 @@ extension UIViewController {
             
             case .networkError:
                 alert.message = "Internet connection is lost. Please check your connectivity"
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(alert: UIAlertAction!) in print("networkError alert dismissed")}))
                 break
             
             case .signInError:
