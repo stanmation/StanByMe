@@ -37,6 +37,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     @IBOutlet weak var myCollectionView: UICollectionView!
     @IBOutlet weak var flowlayout: UICollectionViewFlowLayout!
     @IBOutlet weak var getUsersProgressIndicator: UIActivityIndicatorView!
+	
 
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -53,8 +54,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
 //        let value = UIInterfaceOrientation.portrait.rawValue
 //        UIDevice.current.setValue(value, forKey: "orientation")
         
-        locationManager.startUpdatingLocation()
-        
+		
         myCollectionView.addSubview(refreshControl)
                 
         configureStorage()
@@ -73,10 +73,14 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         flowlayout.minimumInteritemSpacing = space
         flowlayout.minimumLineSpacing = space
         flowlayout.itemSize = CGSize(width: dimension, height: dimension)
+		
+		self.locationManager.startUpdatingLocation()
+
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+		
+		// setup reachability
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: ReachabilityChangedNotification, object: nil)
         
         do {
@@ -88,7 +92,8 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+		
+		// remove reachability
         reachability?.stopNotifier()
         NotificationCenter.default.removeObserver(self,
                                                             name: ReachabilityChangedNotification,
@@ -177,7 +182,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
 //    }
     
     func configureDatabase() {
-        
+        print("configure database")
         getUsersProgressIndicator.startAnimating()
         
         // set the time out and will throw an error if time's up
@@ -282,7 +287,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         
 //        cell.textLabel?.text = nickname
         cell.detailTextLabel?.text = String(distanceInKilometer) + " km"
-        cell.keywordMatchTextField.text = user["noMatch"]! + " matches"
+        cell.keywordMatchTextField.text = user["noMatch"]!
         
         if let thumbnailURL = user["thumbnailURL"], thumbnailURL.hasPrefix("gs://") {
             FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ [weak self] (data, error) in

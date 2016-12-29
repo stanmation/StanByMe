@@ -182,15 +182,9 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     func addPhoto(source: UIImagePickerControllerSourceType) {
         let picker = UIImagePickerController()
         picker.delegate = self
-//        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
-//            picker.sourceType = UIImagePickerControllerSourceType.camera
-//        } else {
-//            picker.sourceType = UIImagePickerControllerSourceType.photoLibrary
-//        }
         picker.sourceType = source
 
         present(picker, animated: true, completion:nil)
-
     }
     
     @IBAction func saveButtonPressed(_ sender: AnyObject) {
@@ -224,43 +218,9 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func setThumbnailURL(withData data: String) {
         // Push data to Firebase Database
-        self.ref.child("users").child(currentUserUID!).child("thumbnailURL").setValue(data)
+	self.ref.child("users").child(currentUserUID!).child("thumbnailURL").setValue(data)
     }
-    
-
-    // this function will generate thumbnail of profile pic
-    func cropImageToSquare(image: UIImage) -> UIImage {
-
-        let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
-        
-        let contextSize: CGSize = contextImage.size
-        
-        var posX: CGFloat = 0.0
-        var posY: CGFloat = 0.0
-        var cgwidth: CGFloat = 0.0
-        var cgheight: CGFloat = 0.0
-        
-        // see what size is longer and create the center off of that
-        if contextSize.width > contextSize.height {
-            posX = ((contextSize.width - contextSize.height) / 2)
-            posY = 0
-            cgwidth = contextSize.height
-            cgheight = contextSize.height
-        } else {
-            posX = 0
-            posY = ((contextSize.height - contextSize.width) / 2)
-            cgwidth = contextSize.width
-            cgheight = contextSize.width
-        }
-        
-        let rect: CGRect = CGRect(x: posX, y: posY, width: cgwidth, height: cgheight)
-        
-        // create bitmap image from context using the rect
-        let imageRef: CGImage = (contextImage.cgImage?.cropping(to: rect))!
-        let resultedImage: UIImage = UIImage(cgImage: imageRef, scale: image.scale, orientation: image.imageOrientation)
-        
-        return resultedImage
-    }
+	
     
     // this function will crop the landscape profile pic
     func cropLandscapeImage(image: UIImage) -> UIImage {
@@ -294,8 +254,14 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
         textField.resignFirstResponder()
         return true
     }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+	
+	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+		guard let text = textField.text else { return true }
+		let newLength = text.characters.count + string.characters.count - range.length
+		return newLength <= 35
+	}
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         picker.dismiss(animated: true, completion:nil)
         var portraitImage: UIImage!
         var thumbnail: UIImage!
@@ -384,16 +350,4 @@ class SettingViewController: UIViewController, UIImagePickerControllerDelegate, 
 }
 
 
-extension UIImage {
-    func resizeWith(width: CGFloat) -> UIImage? {
-        let imageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))))
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = self
-        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, scale)
-        guard let context = UIGraphicsGetCurrentContext() else { return nil }
-        imageView.layer.render(in: context)
-        guard let result = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
-        UIGraphicsEndImageContext()
-        return result
-    }
-}
+

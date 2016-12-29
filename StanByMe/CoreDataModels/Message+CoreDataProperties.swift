@@ -2,7 +2,7 @@
 //  Message+CoreDataProperties.swift
 //  
 //
-//  Created by Stanley Darmawan on 26/11/2016.
+//  Created by Stanley Darmawan on 28/12/2016.
 //
 //
 
@@ -16,10 +16,12 @@ extension Message {
         return NSFetchRequest<Message>(entityName: "Message");
     }
 
+    @NSManaged public var dateUpdated: NSDate?
+    @NSManaged public var id: String?
     @NSManaged public var status: String?
     @NSManaged public var text: String?
-    @NSManaged public var id: String?
-    @NSManaged public var dateUpdated: NSDate?
+    @NSManaged public var thumbnailData: Data?
+    @NSManaged public var thumbnailURL: String?
     @NSManaged public var chat: Chat?
 
 }

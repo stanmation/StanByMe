@@ -74,7 +74,8 @@ let bubble = makeBubble()
 
 func makeBubble() -> (incoming: UIImage, outgoing: UIImage) {
     let image = UIImage(named: "MessageBubble")!
-    
+
+	
     let insetsIncoming = UIEdgeInsets(top: 17, left: 26.5, bottom: 17.5, right: 21)
     let insetsOutgoing = UIEdgeInsets(top: 17, left: 21, bottom: 17.5, right: 26.5)
     

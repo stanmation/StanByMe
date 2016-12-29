@@ -19,10 +19,13 @@
 		1D101FD11DFB6663009A1158 /* MyTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD01DFB6663009A1158 /* MyTabViewController.swift */; };
 		1D101FD71DFBCE80009A1158 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD61DFBCE80009A1158 /* Chat.swift */; };
 		1D101FDD1DFBCE93009A1158 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD81DFBCE93009A1158 /* Chat+CoreDataProperties.swift */; };
-		1D101FDE1DFBCE93009A1158 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FD91DFBCE93009A1158 /* Message.swift */; };
 		1D101FDF1DFBCE93009A1158 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FDA1DFBCE93009A1158 /* Message+CoreDataProperties.swift */; };
 		1D101FE01DFBCE93009A1158 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FDB1DFBCE93009A1158 /* Settings.swift */; };
 		1D101FE11DFBCE93009A1158 /* Settings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D101FDC1DFBCE93009A1158 /* Settings+CoreDataProperties.swift */; };
+		1D17ABBA1E147EE7002F6BF7 /* ImageMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D17ABB91E147EE7002F6BF7 /* ImageMessageTableViewCell.swift */; };
+		1D17ABBC1E14ACE8002F6BF7 /* PictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D17ABBB1E14ACE8002F6BF7 /* PictureViewController.swift */; };
+		1D29DDAE1E1352B000D1F5E3 /* UIImage+Extras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D29DDAD1E1352B000D1F5E3 /* UIImage+Extras.swift */; };
+		1D29DDB21E139B9500D1F5E3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D29DDB11E139B9500D1F5E3 /* Message.swift */; };
 		1D5B5C4F1DF431C3003C0D07 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */; };
 		1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC21DC9F2B200375810 /* GeoFire.m */; };
 		1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D6D1AC41DC9F2B200375810 /* GFBase32Utils.m */; };
@@ -40,7 +43,7 @@
 		1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */; };
 		1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */; };
 		1DD0090C1DD1C8230035B928 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD0090B1DD1C8230035B928 /* SettingViewController.swift */; };
-		1DDFD1411DFD1DB00037C441 /* UIViewController+ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDFD1401DFD1DB00037C441 /* UIViewController+ErrorAlert.swift */; };
+		1DDFD1411DFD1DB00037C441 /* UIViewController+Extras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDFD1401DFD1DB00037C441 /* UIViewController+Extras.swift */; };
 		A140FD5FDF139BC37D5AF180 /* Pods_StanByMe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */; };
 /* End PBXBuildFile section */
 
@@ -60,10 +63,13 @@
 		1D101FD01DFB6663009A1158 /* MyTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTabViewController.swift; sourceTree = "<group>"; };
 		1D101FD61DFBCE80009A1158 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Chat.swift; path = CoreDataModels/Chat.swift; sourceTree = "<group>"; };
 		1D101FD81DFBCE93009A1158 /* Chat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Chat+CoreDataProperties.swift"; path = "CoreDataModels/Chat+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		1D101FD91DFBCE93009A1158 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = CoreDataModels/Message.swift; sourceTree = "<group>"; };
 		1D101FDA1DFBCE93009A1158 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "CoreDataModels/Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1D101FDB1DFBCE93009A1158 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = CoreDataModels/Settings.swift; sourceTree = "<group>"; };
 		1D101FDC1DFBCE93009A1158 /* Settings+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Settings+CoreDataProperties.swift"; path = "CoreDataModels/Settings+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		1D17ABB91E147EE7002F6BF7 /* ImageMessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMessageTableViewCell.swift; sourceTree = "<group>"; };
+		1D17ABBB1E14ACE8002F6BF7 /* PictureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureViewController.swift; sourceTree = "<group>"; };
+		1D29DDAD1E1352B000D1F5E3 /* UIImage+Extras.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extras.swift"; sourceTree = "<group>"; };
+		1D29DDB11E139B9500D1F5E3 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Message.swift; path = CoreDataModels/Message.swift; sourceTree = "<group>"; };
 		1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		1D6D1A041DC9E7BD00375810 /* StanByMe-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StanByMe-Bridging-Header.h"; sourceTree = "<group>"; };
 		1D6D1ABB1DC9F2B200375810 /* GeoFire.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoFire.h; sourceTree = "<group>"; };
@@ -92,7 +98,7 @@
 		1DD009061DD1B2DC0035B928 /* UsersCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewController.swift; sourceTree = "<group>"; };
 		1DD009081DD1C54D0035B928 /* UsersCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersCollectionViewCell.swift; sourceTree = "<group>"; };
 		1DD0090B1DD1C8230035B928 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
-		1DDFD1401DFD1DB00037C441 /* UIViewController+ErrorAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+ErrorAlert.swift"; sourceTree = "<group>"; };
+		1DDFD1401DFD1DB00037C441 /* UIViewController+Extras.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extras.swift"; sourceTree = "<group>"; };
 		22D49F28285E9AFAD3062020 /* Pods_StanByMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StanByMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE3425D57ADB101131646143 /* Pods-StanByMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StanByMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-StanByMe/Pods-StanByMe.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -188,12 +194,12 @@
 		1DC9AB6C1DE8E882000EFA3A /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1D101FD81DFBCE93009A1158 /* Chat+CoreDataProperties.swift */,
-				1D101FD91DFBCE93009A1158 /* Message.swift */,
+				1D29DDB11E139B9500D1F5E3 /* Message.swift */,
 				1D101FDA1DFBCE93009A1158 /* Message+CoreDataProperties.swift */,
 				1D101FDB1DFBCE93009A1158 /* Settings.swift */,
 				1D101FDC1DFBCE93009A1158 /* Settings+CoreDataProperties.swift */,
 				1D101FD61DFBCE80009A1158 /* Chat.swift */,
+				1D101FD81DFBCE93009A1158 /* Chat+CoreDataProperties.swift */,
 				1DC9AB7A1DE8F723000EFA3A /* CoreDataStack.swift */,
 				1DC9AB6F1DE8E93F000EFA3A /* Model.xcdatamodeld */,
 			);
@@ -214,8 +220,11 @@
 				1DCAF8491DE2F1EA00F844E3 /* ChatTableViewCell.swift */,
 				1D0612001DC4A18100720E82 /* MessageViewController.swift */,
 				1D5B5C4E1DF431C3003C0D07 /* MessageTableViewCell.swift */,
+				1D17ABB91E147EE7002F6BF7 /* ImageMessageTableViewCell.swift */,
 				1D101FD01DFB6663009A1158 /* MyTabViewController.swift */,
-				1DDFD1401DFD1DB00037C441 /* UIViewController+ErrorAlert.swift */,
+				1DDFD1401DFD1DB00037C441 /* UIViewController+Extras.swift */,
+				1D29DDAD1E1352B000D1F5E3 /* UIImage+Extras.swift */,
+				1D17ABBB1E14ACE8002F6BF7 /* PictureViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -365,12 +374,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D0611F91DC47ED700720E82 /* AppState.swift in Sources */,
+				1D17ABBA1E147EE7002F6BF7 /* ImageMessageTableViewCell.swift in Sources */,
 				1D6D1ACD1DC9F2B200375810 /* GFGeoHash.m in Sources */,
 				1DD0090C1DD1C8230035B928 /* SettingViewController.swift in Sources */,
 				1DC9AB851DE90273000EFA3A /* CoreDataTableViewController.swift in Sources */,
 				1DCAF84A1DE2F1EA00F844E3 /* ChatTableViewCell.swift in Sources */,
 				1D6D1ACF1DC9F2B200375810 /* GFQuery.m in Sources */,
-				1DDFD1411DFD1DB00037C441 /* UIViewController+ErrorAlert.swift in Sources */,
+				1DDFD1411DFD1DB00037C441 /* UIViewController+Extras.swift in Sources */,
 				1D87E1231DD472F8003E819B /* UserProfileViewController.swift in Sources */,
 				1D0611E51DC4748000720E82 /* AppDelegate.swift in Sources */,
 				1DC9AB711DE8E93F000EFA3A /* Model.xcdatamodeld in Sources */,
@@ -378,12 +388,13 @@
 				1D0611FF1DC491F300720E82 /* SignInViewController.swift in Sources */,
 				1D0612011DC4A18100720E82 /* MessageViewController.swift in Sources */,
 				1D5B5C4F1DF431C3003C0D07 /* MessageTableViewCell.swift in Sources */,
+				1D29DDAE1E1352B000D1F5E3 /* UIImage+Extras.swift in Sources */,
 				1D101FD71DFBCE80009A1158 /* Chat.swift in Sources */,
+				1D17ABBC1E14ACE8002F6BF7 /* PictureViewController.swift in Sources */,
 				1D6D1ACB1DC9F2B200375810 /* GeoFire.m in Sources */,
 				1DC9AB7B1DE8F723000EFA3A /* CoreDataStack.swift in Sources */,
 				1DD009091DD1C54D0035B928 /* UsersCollectionViewCell.swift in Sources */,
 				1D0611FB1DC47EE900720E82 /* Constants.swift in Sources */,
-				1D101FDE1DFBCE93009A1158 /* Message.swift in Sources */,
 				1D101FDF1DFBCE93009A1158 /* Message+CoreDataProperties.swift in Sources */,
 				1D817B8B1DDFBC9E00309161 /* ChatViewController.swift in Sources */,
 				1D101FD11DFB6663009A1158 /* MyTabViewController.swift in Sources */,
@@ -391,6 +402,7 @@
 				1DBF386A1DD0822D00E5406A /* SignUpViewController.swift in Sources */,
 				1D6D1ACC1DC9F2B200375810 /* GFBase32Utils.m in Sources */,
 				1D101FDD1DFBCE93009A1158 /* Chat+CoreDataProperties.swift in Sources */,
+				1D29DDB21E139B9500D1F5E3 /* Message.swift in Sources */,
 				1D101FE11DFBCE93009A1158 /* Settings+CoreDataProperties.swift in Sources */,
 				1DD009071DD1B2DC0035B928 /* UsersCollectionViewController.swift in Sources */,
 			);

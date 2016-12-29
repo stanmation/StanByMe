@@ -54,5 +54,39 @@ extension UIViewController {
         
 
     }
+	
+	// this function will generate thumbnail
+	func cropImageToSquare(image: UIImage) -> UIImage {
+		
+		let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
+		
+		let contextSize: CGSize = contextImage.size
+		
+		var posX: CGFloat = 0.0
+		var posY: CGFloat = 0.0
+		var cgwidth: CGFloat = 0.0
+		var cgheight: CGFloat = 0.0
+		
+		// see what size is longer and create the center off of that
+		if contextSize.width > contextSize.height {
+			posX = ((contextSize.width - contextSize.height) / 2)
+			posY = 0
+			cgwidth = contextSize.height
+			cgheight = contextSize.height
+		} else {
+			posX = 0
+			posY = ((contextSize.height - contextSize.width) / 2)
+			cgwidth = contextSize.width
+			cgheight = contextSize.width
+		}
+		
+		let rect: CGRect = CGRect(x: posX, y: posY, width: cgwidth, height: cgheight)
+		
+		// create bitmap image from context using the rect
+		let imageRef: CGImage = (contextImage.cgImage?.cropping(to: rect))!
+		let resultedImage: UIImage = UIImage(cgImage: imageRef, scale: image.scale, orientation: image.imageOrientation)
+		
+		return resultedImage
+	}
     
 }

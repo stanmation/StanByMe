@@ -57,7 +57,6 @@ class ChatViewController: CoreDataTableViewController {
             ref.child("user-messages").child(currentUserID!).child((chat?.partnerId!)!).child("info").child("read").setValue("read")
 
             controller.hidesBottomBarWhenPushed = true
-            
         }
     }
     

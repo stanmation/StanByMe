@@ -9,8 +9,10 @@
 import UIKit
 import Firebase
 import CoreData
+import ReachabilitySwift
 
-class MessageViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate {
+
+class MessageViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate {
     
     var fr: NSFetchRequest<Message>!
     var fetchedResultsController: NSFetchedResultsController<Message>?
@@ -18,9 +20,14 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     let stack = (UIApplication.shared.delegate as! AppDelegate).stack
 
     var chat : Chat?
+	
+	let reachability = Reachability()
+
 
     @IBOutlet weak var newMessageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
+	@IBOutlet weak var cameraButton: UIButton!
+	
     
     var ref: FIRDatabaseReference!
 //    var messages = [FIRDataSnapshot]()
@@ -28,6 +35,8 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     var partnerUserData = FIRDataSnapshot()
     
     let cellIdentifier = "tableViewCell"
+	let cellIdentifier2 = "imageTableViewCell"
+
 
     fileprivate var _userMessageRefHandle: FIRDatabaseHandle!
     fileprivate var _currentUserRefHandle: FIRDatabaseHandle!
@@ -44,11 +53,18 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
+		// set the camera button
+		let origImage = UIImage(named: "Icon-Camera");
+		let tintedImage = origImage?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+		cameraButton.setImage(tintedImage, for: .normal)
+		
         newMessageTextField.addTarget(self, action: #selector(textChanged), for: .editingChanged)
         
         // configure tableView
         myTableView.register(MessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+		myTableView.register(ImageMessageTableViewCell.self, forCellReuseIdentifier: cellIdentifier2)
+
         myTableView.estimatedRowHeight = 44
         
         // get the userID
@@ -89,14 +105,29 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
 
         disableSendButton()
         subscribeToKeyboardNotifications()
+		
+		// setup reachability
+		NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: ReachabilityChangedNotification, object: nil)
+		do {
+			try reachability?.startNotifier()
+		} catch {
+			print("Unable to start notifier")
+		}
+		
     }
-    
+	
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         unsubscribeToKeyboardNotifications()
+		
+		// remove reachability
+		reachability?.stopNotifier()
+		NotificationCenter.default.removeObserver(self,
+		                                          name: ReachabilityChangedNotification,
+		                                          object: reachability)
     }
-    
+	
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -104,9 +135,41 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
             scrollToTheBottom()
         }
     }
-    
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		
+		if segue.destination is PictureViewController {
+			
+			let controller = segue.destination as! PictureViewController
+			controller.thumbnailURL = sender as! String
+
+		}
+	}
+	
+	func reachabilityChanged(note: NSNotification) {
+		
+		let reachability = note.object as! Reachability
+		
+		if reachability.isReachable {
+			self.cameraButton.tintColor = UIColor.purple
+			self.cameraButton.isEnabled = true
+
+			if reachability.isReachableViaWiFi {
+				print("Reachable via WiFi")
+			} else {
+				print("Reachable via Cellular")
+			}
+		} else {
+			print("Network not reachable")
+			DispatchQueue.main.async {
+				self.cameraButton.tintColor = UIColor.gray
+				self.cameraButton.isEnabled = false
+			}
+		}
+	}
+	
     func configureCoreData() {
-        
+		
         // Create a fetchrequest
         fr = NSFetchRequest<Message>(entityName: "Message")
         fr.sortDescriptors = [NSSortDescriptor(key: "dateUpdated", ascending: true)]
@@ -191,21 +254,31 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
             }
             
             if messagesFound == [] {
-                let newMessage = Message(messageId: snapshot.key, status: message["status"]!, text: message["text"]!, context: strongSelf.stack.context)
+                let newMessage = Message(messageId: snapshot.key, status: message["status"]!, text: message["text"], thumbnailURL: message["imageMessage"], thumbnailData: nil, context: strongSelf.stack.context)
+
                 newMessage.chat = strongSelf.chat
+				
+				if let thumbnailURL = message["imageMessage"], thumbnailURL.hasPrefix("gs://") {
+					FIRStorage.storage().reference(forURL: thumbnailURL).data(withMaxSize: INT64_MAX){ (data, error) in
+						if let error = error {
+							print("Error downloading: \(error)")
+							return
+						}
+						newMessage.thumbnailData = data!
+					}
+				}
             }
-            
-            print("end of message closure")
-        })
+			
+		})
 
     }
-    
+	
     func disableSendButton() {
         sendButton.isEnabled = false
         sendButton.isUserInteractionEnabled = false
         sendButton.backgroundColor = UIColor.gray
     }
-    
+	
     func scrollToTheBottom() {
         // scroll to the bottom of tableView
         let indexPath = IndexPath(row: (fetchedResultsController?.fetchedObjects?.count)! - 1, section: 0)
@@ -220,7 +293,12 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBAction func didSendMessage(_ sender: UIButton) {
         textFieldShouldReturn(newMessageTextField)
     }
-    
+	
+	
+	@IBAction func cameraButtonTapped(_ sender: Any) {
+		displayAlert(alertType: "pickPhoto")
+	}
+	
     // MARK: Keyboard manipulation
     
     func keyboardWillShow(notification:NSNotification) {
@@ -266,8 +344,43 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
             disableSendButton()
         }
     }
-    
-    
+	
+	func addPhoto(source: UIImagePickerControllerSourceType) {
+		let picker = UIImagePickerController()
+		picker.delegate = self
+		picker.sourceType = source
+		
+		present(picker, animated: true, completion:nil)
+	}
+	
+	func picTapped(sender: UITapGestureRecognizer) {
+		let location = sender.location(in: myTableView)
+		let indexPath = myTableView.indexPathForRow(at: location)
+		let cell = myTableView.cellForRow(at: indexPath!) as! ImageMessageTableViewCell
+		
+		performSegue(withIdentifier: "toPictureVC", sender: cell.thumbnailURL)
+
+	}
+	
+	func displayAlert(alertType: String) {
+		let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
+		if alertType == "pickPhoto" {
+			alert.title = "Do you want to send a picture?"
+			alert.addAction(UIAlertAction(title: "Select a picture from camera roll", style: .default, handler: { (handler) in
+				self.addPhoto(source: .photoLibrary)
+			}))
+			
+			if UIImagePickerController.isSourceTypeAvailable(.camera) {
+				alert.addAction(UIAlertAction(title: "Take a picture", style: .default, handler: { (handler) in
+					self.addPhoto(source: .camera)
+				}))
+			}
+			
+			alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+		}
+		present(alert, animated: true, completion: nil)
+	}
+	
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController?.sections![section]
         return sectionInfo!.numberOfObjects
@@ -276,20 +389,39 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Coredata
-        
         let message = fetchedResultsController?.object(at: indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! MessageTableViewCell
-
-        if message?.status == "sender" {
-            cell.incoming(incoming: false)
-        } else {
-            cell.incoming(incoming: true)
-        }
-        cell.messageLabel.text = message?.text
-        return cell
+		
+		//setup ImageMessage and Message cells
+		if let imageURL = message?.thumbnailURL {
+			let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier2, for: indexPath) as! ImageMessageTableViewCell
+			if let thumbnailData = message?.thumbnailData {
+				let singleTap = UITapGestureRecognizer(target: self, action: #selector(picTapped(sender:)))
+				singleTap.numberOfTapsRequired = 1
+				cell.addGestureRecognizer(singleTap)
+				cell.thumbnailURL = (message?.thumbnailURL)!
+				cell.messageImageView.image = UIImage(data: thumbnailData)
+			}
+			if message?.status == "sender" {
+				cell.incoming(incoming: false)
+			} else {
+				cell.incoming(incoming: true)
+			}
+			return cell
+		} else {
+			let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! MessageTableViewCell
+			let text = message?.text
+			cell.messageLabel.text = text
+			if message?.status == "sender" {
+				cell.incoming(incoming: false)
+			} else {
+				cell.incoming(incoming: true)
+			}
+			return cell
+		}
+		
 
     }
-    
+	
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }
@@ -297,6 +429,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
 
     // MARK: UITextViewDelegate protocol methods
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		
         sendMessage(text: textField.text!)
         textField.text = ""
         disableSendButton()
@@ -366,11 +499,12 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         }
 
     }
-    
+	
+	
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         myTableView.beginUpdates()
     }
-    
+	
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
         let set = IndexSet(integer: sectionIndex)
@@ -405,11 +539,78 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         myTableView.endUpdates()
         scrollToTheBottom()
     }
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		
+		picker.dismiss(animated: true, completion:nil)
+		
+		var thumbnail: UIImage!
+
+		if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+			
+			let squareImage = cropImageToSquare(image: pickedImage)
+			thumbnail = squareImage.resizeWith(width: 100)
+			
+		}
+		
+		guard let image = info[UIImagePickerControllerOriginalImage] as! UIImage? else { return }
+
+		let imageName = Date.timeIntervalSinceReferenceDate * 1000
+		let imageData = UIImageJPEGRepresentation(image, 0.8)
+		let thumbnailData = UIImageJPEGRepresentation(thumbnail!, 0.6)
+		let imagePath = "\(currentUserID!)/Messages/\(Int(imageName))-fullsize.jpg"
+		let thumbnailPath = "\(currentUserID!)/Messages/\(Int(imageName)).jpg"
+
+		// load into firebase
+		let metadata = FIRStorageMetadata()
+		metadata.contentType = "image/jpeg"
+		self.storageRef.child(imagePath)
+			.put(imageData!, metadata: metadata) { [weak self] (metadata, error) in
+				guard let strongSelf = self else {return}
+				if let error = error {
+					print("Error uploading: \(error)")
+//					strongSelf.imageUploadProgressIndicator.stopAnimating()
+					strongSelf.displayErrorAlert(alertType: .networkError, message: "")
+					return
+				}
+//				strongSelf.imageUploadProgressIndicator.stopAnimating()
+
+		}
+		
+		self.storageRef.child(thumbnailPath)
+			.put(thumbnailData!, metadata: metadata) { [weak self] (metadata, error) in
+				guard let strongSelf = self else {return}
+				if let error = error {
+					print("Error uploading: \(error)")
+					//					strongSelf.imageUploadProgressIndicator.stopAnimating()
+					strongSelf.displayErrorAlert(alertType: .networkError, message: "")
+					return
+				}
+				//				strongSelf.imageUploadProgressIndicator.stopAnimating()
+				//				strongSelf.setImageURL(withData: strongSelf.storageRef.child((metadata?.path)!).description)
+				
+				var myData = [String: String]()
+				myData["imageMessage"] = strongSelf.storageRef.child((metadata?.path)!).description
+				myData["status"] = "sender"
+				
+				var partnerData = [String: String]()
+				partnerData["imageMessage"] = strongSelf.storageRef.child((metadata?.path)!).description
+				partnerData["status"] = "receiver"
+				
+				strongSelf.ref.child("user-messages").child(strongSelf.currentUserID!).child(strongSelf.partnerUID).child("messages").childByAutoId().setValue(myData)
+				strongSelf.ref.child("user-messages").child(strongSelf.partnerUID).child(strongSelf.currentUserID!).child("messages").childByAutoId().setValue(partnerData)
+		}
+		
+	}
+	
+	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+		picker.dismiss(animated: true, completion:nil)
+	}
 
 }
 
 extension MessageViewController {
-    
+	
     func executeSearch() {
         do {
             try fetchedResultsController?.performFetch()
