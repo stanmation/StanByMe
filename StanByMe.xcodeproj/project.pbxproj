@@ -89,6 +89,7 @@
 		1D6D1ACA1DC9F2B200375810 /* GFQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFQuery.m; sourceTree = "<group>"; };
 		1D817B8A1DDFBC9E00309161 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		1D87E1221DD472F8003E819B /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		1DAF6F651E2092BC00478138 /* StanByMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StanByMe.entitlements; sourceTree = "<group>"; };
 		1DB5DA4B1DCD4CB600842664 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1DBF38691DD0822D00E5406A /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		1DC9AB701DE8E93F000EFA3A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -137,6 +138,7 @@
 		1D0611E31DC4748000720E82 /* StanByMe */ = {
 			isa = PBXGroup;
 			children = (
+				1DAF6F651E2092BC00478138 /* StanByMe.entitlements */,
 				1DC9AB6C1DE8E882000EFA3A /* Models */,
 				1DD0090A1DD1C7CA0035B928 /* ViewControllers */,
 				1D6D1AB91DC9F2B200375810 /* GeoFire */,
@@ -285,6 +287,11 @@
 						DevelopmentTeam = Q767PD4MNB;
 						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -529,6 +536,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = StanByMe/StanByMe.entitlements;
 				DEVELOPMENT_TEAM = Q767PD4MNB;
 				INFOPLIST_FILE = StanByMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -547,6 +555,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = StanByMe/StanByMe.entitlements;
 				DEVELOPMENT_TEAM = Q767PD4MNB;
 				INFOPLIST_FILE = StanByMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

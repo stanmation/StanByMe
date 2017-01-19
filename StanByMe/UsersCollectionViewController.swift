@@ -15,7 +15,9 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     var ref: FIRDatabaseReference!
     var users:[[String: String]]?
     var closestUsers = [String: CLLocation]()
-    
+	
+	let currentUserID = FIRAuth.auth()?.currentUser?.uid
+	
     fileprivate var _refHandle: FIRDatabaseHandle!
     
     var storageRef: FIRStorageReference!
@@ -49,6 +51,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         
         //lock orientation
 //        let value = UIInterfaceOrientation.portrait.rawValue
@@ -61,7 +64,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
 
         ref = FIRDatabase.database().reference()
         users = [[String: String]]()
-        
+		
         // configure location manager
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
@@ -88,6 +91,13 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         } catch {
             print("Unable to start notifier")
         }
+		
+		// save push Notification token into firebase
+		let pushNotifToken = UserDefaults.standard.value(forKey: "push_notif_token")
+		if pushNotifToken != nil {
+			ref.child("users").child(currentUserID!).child("pushNotifToken").setValue(pushNotifToken as! String)
+		}
+		
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -191,7 +201,6 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
         
         // set your user location
-        let currentUserID = FIRAuth.auth()?.currentUser?.uid
         geoFire = GeoFire(firebaseRef: ref.child("locations"))
         geoFire?.setLocation(currentUserLocation, forKey: currentUserID!)
         
@@ -230,7 +239,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
                 if counter > 0 {
                     var user = snapshot.value as! [String: String]
                     // this will disable listing your profile on your list
-                    if user["uid"] != currentUserID {
+                    if user["uid"] != strongSelf.currentUserID {
                         user["noMatch"] = String(counter)
                         tempUsers.append(user)
                     }

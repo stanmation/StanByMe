@@ -23,7 +23,6 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
 	
 	let reachability = Reachability()
 
-
     @IBOutlet weak var newMessageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
 	@IBOutlet weak var cameraButton: UIButton!
@@ -454,6 +453,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         // set partner data in user-messages
         let partnerUserDict = partnerUserData.value as! [String: String]
         let partnerNickname = partnerUserDict["nickname"]!
+		let partnerPushNotifToken = partnerUserDict["pushNotifToken"]
         
         var myData = [String: String]()
         myData["status"] = "sender"
@@ -497,7 +497,23 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
             let chat = Chat(currentUserId: currentUserUID!, partnerId: partnerUID, partnerNickname: partnerNickname, lastUpdate: now, read: "read", lastMessage: text, thumbnailData: nil, context: stack.context)
             self.chat = chat
         }
+		
+		if partnerPushNotifToken != nil {
+			// send push notification
+			let url: URL = URL(string: "http://localhost/stanbyme/messagepush.php")!
+			let request: NSMutableURLRequest = NSMutableURLRequest(url: url)
+			request.httpMethod = "POST"
+			let bodyData = "token=\(partnerPushNotifToken!)"
+			request.httpBody = bodyData.data(using: String.Encoding.utf8)
+			URLSession.shared.dataTask(with: request as URLRequest) { (data, response, error) in
+				print("response: \(response!)")
+				print("data: \(	String(data: data!, encoding: String.Encoding.utf8))")
+				print("error: \(error)")
+				
+				}.resume()
+		}
 
+		
     }
 	
 	

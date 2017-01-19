@@ -19,9 +19,11 @@ import Firebase
 
 @objc(SignInViewController)
 class SignInViewController: UIViewController, UIAlertViewDelegate {
+	
+	var ref: FIRDatabaseReference!
 
-  @IBOutlet weak var emailField: UITextField!
-  @IBOutlet weak var passwordField: UITextField!
+	@IBOutlet weak var emailField: UITextField!
+	@IBOutlet weak var passwordField: UITextField!
 
   override func viewDidAppear(_ animated: Bool) {
     if let user = FIRAuth.auth()?.currentUser {

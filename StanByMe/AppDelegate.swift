@@ -13,11 +13,13 @@ import ReachabilitySwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+	
+	var ref: FIRDatabaseReference!
+
 
     var window: UIWindow?
     let stack = CoreDataStack(modelName: "Model")!
-
-
+	
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -34,7 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
 
         FIRApp.configure()
-        
+		
+		registerForPushNotifications(application: application)
+		
         return true
     }
 
@@ -81,6 +85,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            return checkOrientation(viewController: viewController!.presentedViewController)
 //        }
 //    }
+	
+	
+	// push notification functions
+	
+	func registerForPushNotifications(application: UIApplication) {
+		let notificationSettings = UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil)
+		application.registerUserNotificationSettings(notificationSettings)
+	}
+	
+	func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+		if notificationSettings.types != .none {
+			application.registerForRemoteNotifications()
+		}
+	}
+	
+	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+		
+		deviceToken.withUnsafeBytes { (bytes: UnsafePointer<CChar>) -> Void in
+			let tokenChars = UnsafePointer<CChar>(bytes)
+			
+			var tokenString = ""
+			
+			for i in 0..<deviceToken.count {
+				tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
+			}
+			
+			print("Device Token:", tokenString)
+			
+			UserDefaults.standard.setValue(tokenString, forKey: "push_notif_token")
+			
+			if AppState.sharedInstance.signedIn {
+				let currentUserID = FIRAuth.auth()?.currentUser?.uid
+				ref = FIRDatabase.database().reference()
+			ref.child("users").child(currentUserID!).child("pushNotifToken").setValue(tokenString)
+			}
+
+		}
+
+
+
+	}
+	
+ 
+	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+		print("Failed to register:", error)
+	}
 
 }
 
