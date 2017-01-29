@@ -22,6 +22,8 @@ class UserProfileViewController: UIViewController {
     @IBOutlet weak var profilePicImageView: UIImageView!
     
     @IBOutlet weak var imageProgressIndicator: UIActivityIndicatorView!
+	
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,8 +58,10 @@ class UserProfileViewController: UIViewController {
         fetchUserInfo()
         
         title = user["nickname"]
-        
+
+		
     }
+	
     
     func getDataFromDB() {
         if let imageURL = user["imageURL"] {

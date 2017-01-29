@@ -889,12 +889,12 @@ Girl</string>
                         <constraints>
                             <constraint firstItem="J0c-58-2d8" firstAttribute="centerX" secondItem="PvO-zn-2oz" secondAttribute="centerX" id="4AX-4j-wC0"/>
                             <constraint firstItem="PBY-j4-zWy" firstAttribute="top" secondItem="IEj-8e-KUO" secondAttribute="bottom" id="838-oq-vgR"/>
+                            <constraint firstItem="7Uj-Nc-YX7" firstAttribute="centerY" secondItem="PvO-zn-2oz" secondAttribute="centerY" id="8Ns-Z4-f3M"/>
+                            <constraint firstItem="7Uj-Nc-YX7" firstAttribute="centerX" secondItem="PvO-zn-2oz" secondAttribute="centerX" id="V7o-5G-BGT"/>
                             <constraint firstAttribute="trailing" secondItem="IEj-8e-KUO" secondAttribute="trailing" id="V80-ig-kun"/>
                             <constraint firstItem="J0c-58-2d8" firstAttribute="centerY" secondItem="PvO-zn-2oz" secondAttribute="centerY" id="bI4-yB-xog"/>
                             <constraint firstItem="IEj-8e-KUO" firstAttribute="top" secondItem="PvO-zn-2oz" secondAttribute="top" id="fN9-4J-TSx"/>
                             <constraint firstItem="IEj-8e-KUO" firstAttribute="leading" secondItem="PvO-zn-2oz" secondAttribute="leading" id="g7h-mw-hVT"/>
-                            <constraint firstItem="7Uj-Nc-YX7" firstAttribute="centerX" secondItem="PvO-zn-2oz" secondAttribute="centerX" id="miC-ga-GPS"/>
-                            <constraint firstItem="7Uj-Nc-YX7" firstAttribute="centerY" secondItem="PvO-zn-2oz" secondAttribute="centerY" id="vhJ-SW-5Cb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="NQ1-YI-EsJ">
@@ -904,7 +904,7 @@ Girl</string>
                         <outlet property="flowlayout" destination="XL3-1P-Ush" id="fv9-T9-9XF"/>
                         <outlet property="getUsersProgressIndicator" destination="J0c-58-2d8" id="May-OC-MAx"/>
                         <outlet property="myCollectionView" destination="IEj-8e-KUO" id="FrN-ji-Pgb"/>
-                        <outlet property="warningMsgTextView" destination="7Uj-Nc-YX7" id="RHc-gT-Gp3"/>
+                        <outlet property="warningMsgTextView" destination="7Uj-Nc-YX7" id="jkO-6W-SOP"/>
                         <segue destination="2Yh-7g-hM8" kind="show" identifier="toProfileSeque" id="e9g-aC-cjG"/>
                     </connections>
                 </viewController>

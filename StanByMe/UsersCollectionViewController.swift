@@ -51,13 +51,7 @@ class UsersCollectionViewController: UIViewController, UICollectionViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
-        //lock orientation
-//        let value = UIInterfaceOrientation.portrait.rawValue
-//        UIDevice.current.setValue(value, forKey: "orientation")
-        
-		
         myCollectionView.addSubview(refreshControl)
                 
         configureStorage()

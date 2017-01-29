@@ -63,29 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-    
-//    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-//        return checkOrientation(viewController: self.window?.rootViewController)
-//    }
-    
-//    func checkOrientation(viewController:UIViewController?)-> UIInterfaceOrientationMask{
-//        
-//        if (viewController == nil){
-//            
-//            return UIInterfaceOrientationMask.portrait //All means all orientation
-//            
-//        } else if (viewController is MyTabViewController) {
-//            if let tabBarController = viewController as? MyTabViewController,
-//                let navigationViewControllers = tabBarController.viewControllers as? [UINavigationController] {
-//                return checkOrientation(viewController: navigationViewControllers[tabBarController.selectedIndex].visibleViewController)
-//            } else {
-//                return UIInterfaceOrientationMask.portrait
-//            }
-//        } else {
-//            return checkOrientation(viewController: viewController!.presentedViewController)
-//        }
-//    }
-	
 	
 	// push notification functions
 	
@@ -131,6 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
 		print("Failed to register:", error)
 	}
+	
 
 }
 

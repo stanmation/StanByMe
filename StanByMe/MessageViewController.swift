@@ -26,10 +26,8 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet weak var newMessageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
 	@IBOutlet weak var cameraButton: UIButton!
-	
     
     var ref: FIRDatabaseReference!
-//    var messages = [FIRDataSnapshot]()
     var currentUserData = FIRDataSnapshot()
     var partnerUserData = FIRDataSnapshot()
     
@@ -79,6 +77,7 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         // add gesture recognizer when view is tapped, in this case it will hide the keyboard
         let tap = UITapGestureRecognizer(target: self, action: #selector(viewIsTapped))
         view.addGestureRecognizer(tap)
+		
     }
     
     deinit {
@@ -499,20 +498,9 @@ class MessageViewController: UIViewController, UITableViewDataSource, UITableVie
         }
 		
 		if partnerPushNotifToken != nil {
-			// send push notification
-			let url: URL = URL(string: "http://localhost/stanbyme/messagepush.php")!
-			let request: NSMutableURLRequest = NSMutableURLRequest(url: url)
-			request.httpMethod = "POST"
-			let bodyData = "token=\(partnerPushNotifToken!)"
-			request.httpBody = bodyData.data(using: String.Encoding.utf8)
-			URLSession.shared.dataTask(with: request as URLRequest) { (data, response, error) in
-				print("response: \(response!)")
-				print("data: \(	String(data: data!, encoding: String.Encoding.utf8))")
-				print("error: \(error)")
-				
-				}.resume()
+			// send a push notification
+			Client.sharedInstance().sendMessagePushNotification(token: partnerPushNotifToken!)
 		}
-
 		
     }
 	
